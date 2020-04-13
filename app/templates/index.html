@@ -1,0 +1,98 @@
+{% extends '_master.html' %}
+{% block datatable %}
+    <div class="w3-main" style="padding-top: 22px; margin: 22px;">
+        <!-- Clients Table -->
+        <table id="dg" title="Клиенты системы 'Питание'" class="easyui-datagrid" style="width:100%;height:800px;"
+               url="{{ url_for("api.get_clients") }}"
+               toolbar="#toolbar" rownumbers="true" pagination="true" fitColumns="true" singleSelect="true">
+            <thead>
+            <tr>
+                <th data-options="field:'client_id',width:80">ID</th>
+                <th data-options="field:'client_name',width:80">Ф.И.О</th>
+                <th data-options="field:'card_id',width:80">ID пропуска</th>
+                <th data-options="field:'group',width:80">Группа клиентов</th>
+                <th data-options="field:'quota',width:80">Квота раз/день</th>
+                <th data-options="field:'is_active',width:80">Статус</th>
+
+
+            </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <span>Поиск:</span>
+             <input id="client_search" style="line-height:26px;border:1px solid #ccc">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="clientSearch()">
+                </a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-sum" plain="true" onclick="clientLogs()">Статистика</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">Новый
+                клиент</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true"
+               onclick="editUser()">Редактировать информацию о клиенте</a>
+               <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-lock" plain="true" onclick="blockUser()">Заблокировать</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="activateUser()">Разблокировать</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-no" plain="true"
+               onclick="destroyUser()">Удалить клиента</a>
+        </div>
+
+
+         <div id="client-logs" iconCls="icon-large-chart"class="easyui-dialog" style="width:40%"
+             data-options="closed:true,modal:true,border:'thin',buttons:'#dlg-buttons'">
+
+        <table id="logs" title="Обращения за все время" class="easyui-datagrid" style="width:100%;height:800px;"
+
+               rownumbers="true" pagination="true" fitColumns="true" singleSelect="true">
+            <thead>
+            <tr>
+                <th data-options="field:'log_id',width:80">ID</th>
+                <th data-options="field:'terminal_name',width:80">Терминал</th>
+                <th data-options="field:'time_stamp',width:80">Время</th>
+
+
+
+            </tr>
+            </thead>
+        </table>
+         </div>
+
+        <div id="dlg" class="easyui-dialog" style="width:40%"
+             data-options="closed:true,modal:true,border:'thin',buttons:'#dlg-buttons'">
+            <form id="fm" style="margin:0;padding:20px 20px">
+                <h3>Информация о клиенте</h3>
+                <div style="margin-bottom:10px">
+                    <input name="client_name" class="easyui-textbox" required="true" label="Ф.И.О. клиента:" data-options="labelPosition: 'top'" validType="
+		maxLength:[128]"
+                           style="width:100%">
+                </div>
+                <div style="margin-bottom:10px">
+                    <input name="card_id" class="easyui-numberbox" required="true" label="ID пропуска:"  data-options="labelPosition: 'top', min: 0, max: 9999999"
+                           style="width:100%">
+                </div>
+                <div style="margin-bottom:10px">
+                    <input name="quota" class="easyui-numberbox" required="true" label="Квота питания:" data-options="labelPosition: 'top', min: 0, max: 100 "
+                           style="width:100%">
+                </div>
+                <div style="margin-bottom:10px">
+                    <input id="groups-combo" class="easyui-combobox" name="group" style="width:100%;" data-options="
+                    valueField: 'group_id',
+                    textField: 'group_title',
+                    label: 'Группа :',
+                     editable: false,
+                    labelPosition: 'top'
+                    ">
+
+                </div>
+
+            </form>
+        </div>
+
+
+        <div id="dlg-buttons">
+            <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveUser()"
+               style="width:120px">Сохранить</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
+               onclick="javascript:$('#dlg').dialog('close')" style="width:120px">Отмена</a>
+        </div>
+        <!-- Clients Table -->
+
+    </div>
+{% endblock %}s

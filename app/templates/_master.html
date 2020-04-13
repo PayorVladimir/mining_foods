@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Система Питания|Горный университет</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/material/easyui.css">
+    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/color.css">
+    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/demo/demo.css">
+</head>
+<body class="w3-light-grey">
+
+
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar  w3-collapse w3-white w3-top  " style="z-index:3;width:300px;" id="mySidebar"><br>
+    <div class="w3-bar-block">
+        <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black"
+           style="text-decoration: none" onclick="w3_close()" title="close menu"><i class="fa fa-arrow-left fa-fw"></i> 
+            Закрыть меню</a>
+    </div>
+    <div class="w3-container" style="margin-left: 0;">
+
+        <h5>Пользователь</h5>
+
+
+        <div class="w3-col s6 w3-bar">
+            <span>Имя: {{ current_user.username }}</span><br>
+            <span>Логин: {{ current_user.login }}</span><br>
+            <span>Зарегистрирован: {{ current_user.registered }}</span><br>
+
+            <span> Уровень доступа: {% if current_user.role_id == 2 %} Администратор {% else %}
+                Модератор {% endif %} </span>
+
+        </div>
+    </div>
+    <hr>
+    <div class="w3-container">
+        <h4>Панель управления</h4>
+    </div>
+    <div class="w3-bar-block">
+
+        <a href="{{ url_for('main.moderator') }}" class="w3-bar-item w3-large w3-button w3-padding"
+           style="text-decoration: none"><i class="fa fa-users"></i>  Клиенты</a>
+        <a href="{{ url_for('main.groups') }}" class="w3-bar-item w3-large w3-button w3-padding"
+               style="text-decoration: none"><i class="fas fa-tags fa-fw"></i>  Группы</a>
+        <a href="{{ url_for('main.terminals') }}" class="w3-bar-item  w3-large w3-button w3-padding"
+           style="text-decoration: none"><i class="fas fa-tablet"></i>  Терминалы</a>
+        {% if current_user.role_id == 2 %}
+            <a href="{{ url_for('auth.users') }}" class="w3-bar-item w3-large w3-button w3-padding"
+               style="text-decoration: none"><i class="fas fa-users-cog fa-fw"></i>  Пользователи</a>
+
+        {% endif %}
+
+        <hr>
+
+        <a href="{{ url_for('auth.logout') }}" class="w3-bar-item w3-button w3-padding" style="text-decoration: none"><i
+                class="fa fa-close"></i>  Выход</a>
+    </div>
+</nav>
+
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="Закрыть"
+     id="myOverlay"></div>
+
+
+<div class="w3-main" style="margin-left: 300px;">
+    <!-- Top container -->
+    <div class="w3-bar w3-top w3-green w3-card-4 w3-large" style="z-index:4;">
+
+  <span class="w3-bar-item ">
+      <button class="w3-bar-item w3-left w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey "
+              onclick="w3_open();"><i class="fa fa-bars"></i> </button>
+        </span>
+        <h5 class="w3-bar-item ">Система "Питание"</h5>
+
+    </div>
+
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-top:43px; height: 90%">
+
+
+        {% block datatable %} {% endblock %}
+        {% block terminals %} {% endblock %}
+        {% block users %} {% endblock %}
+        {%  block groups %}{% endblock %}
+
+    </div>
+</div>
+
+
+</body>
+
+
+</html>
+
+<script>
+    // Get the Sidebar
+    var mySidebar = document.getElementById("mySidebar");
+
+    // Get the DIV with overlay effect
+    var overlayBg = document.getElementById("myOverlay");
+
+    // Toggle between showing and hiding the sidebar, and add overlay effect
+    function w3_open() {
+        if (mySidebar.style.display === 'block') {
+            mySidebar.style.display = 'none';
+            overlayBg.style.display = "none";
+        } else {
+            mySidebar.style.display = 'block';
+            overlayBg.style.display = "block";
+        }
+    }
+
+    // Close the sidebar with the close button
+    function w3_close() {
+        mySidebar.style.display = "none";
+        overlayBg.style.display = "none";
+    }
+</script>
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="https://www.jeasyui.com/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="https://www.jeasyui.com/easyui/datagrid-detailview.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script src="{{ url_for('static', filename="js/datagrid-filter.js") }}"></script>
+
+<!-- Custom scripts -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/foods.js') }}"></script>

@@ -1,0 +1,37 @@
+.DS_Store
+.env
+.flaskenv
+*.pyc
+*.pyo
+env/
+env*
+venv/
+migrations/
+migrations*
+venv*
+dist/
+build/
+*.egg
+*.egg-info/
+_mailinglist
+.tox/
+.cache/
+.pytest_cache/
+.idea/
+docs/_build/
+.vscode
+
+run.py
+*.py[cod]
+
+# C extensions
+*.so
+
+
+# SQLite databases
+*.sqlite
+
+
+# Environment files
+.env
+.env-mysql

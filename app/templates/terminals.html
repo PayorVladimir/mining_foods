@@ -1,0 +1,52 @@
+{% extends '_master.html' %}
+{% block terminals %}
+  <div class="w3-main" style="padding-top: 22px; margin: 22px; height: 100%">
+       <!-- Clients Table -->
+          <table id="dg-terminals" title="Терминалы системы 'Питание'" class="easyui-datagrid" style="width:100%;height:800px;"
+            url="{{ url_for("api.get_terminals") }}"
+            toolbar="#toolbar" pagination="true"
+            rownumbers="true" fitColumns="true" singleSelect="true">
+        <thead>
+            <tr>
+                <th data-options="field:'terminal_id',width:80" >ID</th>
+                <th  data-options="field:'terminal_description',width:80">Имя терминала (локация)</th>
+                <th  data-options="field:'terminal_uid',width:80">UID терминала</th>
+                <th  data-options="field:'date_registred',width:80">Дата и время регистрации</th>
+                <th  data-options="field:'total_requests',width:80">Всего обращений</th>
+                <th  data-options="field:'requests_per_day',width:80">Обращений за последние сутки</th>
+                <th  data-options="field:'is_active',width:80">Статус</th>
+
+
+            </tr>
+        </thead>
+    </table>
+    <div id="toolbar">
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editTerminal()">Редактировать настройки терминала</a>
+        {%  if current_user.role_id == 2 %}
+
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-lock" plain="true" onclick="blockTerminal()">Заблокировать</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="activateTerminal()">Активировать</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-no" plain="true" onclick="deleteTerminal()">Удалить</a>
+        {%  endif %}
+    </div>
+
+    <div id="dlg-terminals" class="easyui-dialog" style="width:40%" data-options="closed:true,modal:true,border:'thin',buttons:'#dlg-buttons'">
+        <form id="fm-terminals"   style="margin:0;padding:20px 20px">
+            <h3>Информация о терминале</h3>
+            <div style="margin-bottom:10px">
+                <input name="terminal_description" data-options="labelPosition: 'top'" validType="
+		length:[1,128]",class="easyui-textbox" required="true" label="Название терминала:" style="width:100%">
+            </div>
+
+
+        </form>
+    </div>
+
+
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveTerminal()" style="width:120px">Сохранить</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:120px">Отмена</a>
+    </div>
+        <!-- Clients Table -->
+  </div>
+{%  endblock %}

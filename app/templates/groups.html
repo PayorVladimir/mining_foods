@@ -1,0 +1,48 @@
+{% extends '_master.html' %}
+{%  block groups %}
+  <div class="w3-main" style="padding-top: 22px; margin: 22px; height: 100%">
+       <!-- Clients Table -->
+          <table id="dg-groups" title="Группы клиентов системы 'Питание'" class="easyui-datagrid" style="width:100%;height:800px;"
+            url="{{ url_for("api.get_groups") }}"
+            toolbar="#toolbar" pagination="true"
+            rownumbers="true" fitColumns="true" singleSelect="true">
+        <thead>
+            <tr>
+                <th data-options="field:'group_id',width:80" >ID</th>
+                <th  data-options="field:'group_title',width:80">Название</th>
+{#                <th  data-options="field:'valid_thru',width:80">Активна до</th>#}
+                <th  data-options="field:'total_clients',width:80">Всего клиентов в группе</th>
+                <th  data-options="field:'is_active',width:80">Статус</th>
+            </tr>
+        </thead>
+    </table>
+    <div id="toolbar">
+         <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newGroup()">Создать группу</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editGroup()">Редактировать группу</a>
+
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-lock" plain="true" onclick="blockGroup()">Заблокировать</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="activateGroup()">Разблокировать</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-no" plain="true" onclick="deleteGroup()">Удалить</a>
+
+    </div>
+
+    <div id="dlg-groups" class="easyui-dialog" style="width:40%" data-options="closed:true,modal:true,border:'thin',buttons:'#dlg-buttons'">
+        <form id="fm-groups"   style="margin:0;padding:20px 20px">
+            <h3>Группа клиентов</h3>
+            <div style="margin-bottom:10px">
+                <input name="group_title" class="easyui-textbox" data-options="labelPosition: 'top'"  validType="
+		maxLength:[128]" required="true" label="Имя группы :" style="width:100%">
+{#                <input class="easyui-datetimebox" name="group_valid_thru" label="Активна до :" data-options="required:true,showSeconds:false, labelPosition: 'top'" value="3/4/2010 2:3" style="width:150px">#}
+            </div>
+
+
+        </form>
+    </div>
+
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveGroup()" style="width:120px">Сохранить</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:120px">Отмена</a>
+    </div>
+        <!-- Clients Table -->
+  </div>
+{% endblock %}

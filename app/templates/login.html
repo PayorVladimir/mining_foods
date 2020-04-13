@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html>
+<title>Авторизация | Профсоюз</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body>
+
+<div class="w3-container w3-mobile">
+    <div class="w3-display-middle w3-mobile" style="max-width: 600px;">
+       <div class="w3-container w3-green">
+        <h5>Вход в личный кабинет </h5>
+    </div>
+    <form action="" method="post" novalidate class="w3-container w3-card-4">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username(class_="w3-input" ) }}
+            {{ form.username.label }}
+
+        </p>
+        <p>
+            {{ form.password(size=32,  class_="w3-input") }}
+            {{ form.password.label }}
+
+        </p>
+        <p>{{ form.remember_me(class_="w3-check") }} {{ form.remember_me.label }}</p>
+        <p>{{ form.submit(class_="w3-button w3-section w3-green w3-ripple") }}</p>
+    </form>
+</div>
+    </div>
+
+</body>
+
+<htmL>
