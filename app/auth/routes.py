@@ -57,11 +57,11 @@ def login():
         user = User.query.filter_by(login=form.username.data).first()
         if user is None or not user.verify_password(form.password.data):
             flash('Неверное имя пользователя или пароль')
-            return redirect(url_for('auth.login', _external=True))
+            return redirect("https://digital.spmi.ru/mining_foods/auth/login")
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('main.moderator', _external=True)
+            next_page = "https://digital.spmi.ru/mining_foods/"+next_page
         return redirect(next_page)
     return render_template('login.html', title='Вход', form=form)
 
@@ -69,7 +69,7 @@ def login():
 @auth.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('main.moderator', _external=True))
+    return redirect("https://digital.spmi.ru/mining_foods/auth/login")
 
 
 @auth.route("/users", methods=['GET','POST'])
@@ -80,6 +80,6 @@ def users():
         user = User(login=form.login.data, username=form.username.data, password=form.password2.data )
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('main.moderator', _external=True))
+        return redirect("https://digital.spmi.ru/mining_foods/auth/users")
 
     return render_template('users.html', form = form)
