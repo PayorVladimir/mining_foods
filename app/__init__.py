@@ -37,7 +37,7 @@ def create_app(config_name):
     from .api import api as api_blueprint
     from .main import main as main_blueprint
     from .auth import auth as auth_blueprint
-    app.config['APPLICATION_ROOT'] = '/mining_foods'
+
     app.register_blueprint(main_blueprint)
     app.register_blueprint(api_blueprint, url_prefix='/api/v1/')
     app.register_blueprint(auth_blueprint, url_prefix='/auth/')
