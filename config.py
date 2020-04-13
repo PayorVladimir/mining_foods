@@ -28,6 +28,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    LOGIN_VIEW = "http://localhost:5000/auth/login"
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:{11111111}@localhost/foods?charset=utf8mb4"
 
 
@@ -38,7 +39,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI =  "mysql+pymysql://minecite:DBspmi-20@localhost/foods"
-
+    LOGIN_VIEW = "https://digital.spmi./mining_foods/auth/login"
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)

@@ -32,7 +32,7 @@ def create_app(config_name):
 
     db.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_view = 'auth.login'
+    login_manager.login_view = app.config["LOGIN_VIEW"]
 
     from .api import api as api_blueprint
     from .main import main as main_blueprint
