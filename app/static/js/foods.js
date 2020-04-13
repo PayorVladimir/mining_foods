@@ -1,10 +1,10 @@
 $(function() {
-    $('#groups-combo').combobox('reload', '/mining_foods/api/v1/groups_all');
+    $('#groups-combo').combobox('reload', '/mining_foods/api/v1/groups_all/');
 });
 
 
 
-              $('#dg').datagrid('enableFilter');
+
 
             //terminals logs
           var dgterminals = $('#dg-terminals').datagrid({
@@ -42,7 +42,7 @@ $(function() {
                     $('#dg-terminals').datagrid('fixDetailRowHeight',index);
                 }
             });
-          dgterminals.datagrid('enableFilter');
+
 
 
 var url;

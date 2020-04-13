@@ -61,7 +61,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = "https://digital.spmi.ru/mining_foods/"+next_page
+            next_page = "https://digital.spmi.ru/mining_foods/auth/user/"
         return redirect(next_page)
     return render_template('login.html', title='Вход', form=form)
 
@@ -80,6 +80,6 @@ def users():
         user = User(login=form.login.data, username=form.username.data, password=form.password2.data )
         db.session.add(user)
         db.session.commit()
-        return redirect("https://digital.spmi.ru/mining_foods/auth/users")
+        return redirect("https://digital.spmi.ru/mining_foods/auth/users/")
 
     return render_template('users.html', form = form)
