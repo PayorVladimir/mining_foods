@@ -51,17 +51,17 @@ def create_admin():
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.moderator'))
+        return redirect(url_for('main.moderator', _external=True))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(login=form.username.data).first()
         if user is None or not user.verify_password(form.password.data):
             flash('Неверное имя пользователя или пароль')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.login', _external=True))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('main.moderator')
+            next_page = url_for('main.moderator', _external=True)
         return redirect(next_page)
     return render_template('login.html', title='Вход', form=form)
 
@@ -69,7 +69,7 @@ def login():
 @auth.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('main.moderator'))
+    return redirect(url_for('main.moderator', _external=True))
 
 
 @auth.route("/users", methods=['GET','POST'])
@@ -80,6 +80,6 @@ def users():
         user = User(login=form.login.data, username=form.username.data, password=form.password2.data )
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('main.moderator'))
+        return redirect(url_for('main.moderator', _external=True))
 
     return render_template('users.html', form = form)

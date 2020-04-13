@@ -20,7 +20,7 @@ _mailinglist
 .idea/
 docs/_build/
 .vscode
-
+food.log
 run.py
 *.py[cod]
 
