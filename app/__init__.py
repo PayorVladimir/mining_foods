@@ -5,9 +5,10 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask import request
 from config import config
-from flask_behind_proxy import FlaskBehindProxy
+
 
 login_manager = LoginManager()
+
 
 
 db = SQLAlchemy()
@@ -26,7 +27,8 @@ def add_cors_headers(response):
 
 def create_app(config_name):
     app = Flask(__name__)
-    proxied = FlaskBehindProxy(app)
+
+
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     # implement CORs support
@@ -43,5 +45,6 @@ def create_app(config_name):
     app.register_blueprint(main_blueprint)
     app.register_blueprint(api_blueprint, url_prefix='/api/v1/')
     app.register_blueprint(auth_blueprint, url_prefix='/auth/')
+
 
     return app
