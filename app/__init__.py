@@ -32,13 +32,13 @@ def create_app(config_name):
 
     db.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_view = app.config["LOGIN_VIEW"]
+    login_manager.login_view = 'auth.login'
 
     from .api import api as api_blueprint
     from .main import main as main_blueprint
     from .auth import auth as auth_blueprint
-    app.register_blueprint(main_blueprint, url_prefix='mining_foods/')
-    app.register_blueprint(api_blueprint, url_prefix='mining_foods/api/v1/')
-    app.register_blueprint(auth_blueprint, url_prefix='mining_foods/api/v1/auth/')
+    app.register_blueprint(main_blueprint)
+    app.register_blueprint(api_blueprint, url_prefix='/api/v1/')
+    app.register_blueprint(auth_blueprint, url_prefix='/auth/')
 
     return app
