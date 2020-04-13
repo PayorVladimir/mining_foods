@@ -30,6 +30,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     LOGIN_VIEW = "http://localhost:5000/auth/login"
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:{11111111}@localhost/foods?charset=utf8mb4"
+    APPLICATION_ROOT = "/mining_foods"
 
 
 class TestingConfig(Config):
