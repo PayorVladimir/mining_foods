@@ -28,7 +28,7 @@ def add_cors_headers(response):
 def create_app(config_name):
     app = Flask(__name__)
 
-    ReverseProxyPrefixFix(app)
+
 
 
     app.config.from_object(config[config_name])
@@ -38,6 +38,7 @@ def create_app(config_name):
 
     db.init_app(app)
     login_manager.init_app(app)
+    ReverseProxyPrefixFix(app)
     login_manager.login_view = 'auth.login'
 
     from .api import api as api_blueprint
