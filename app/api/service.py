@@ -17,6 +17,9 @@ def create_app_token():
 
     db.session.commit()
 
+
+
+
 @api.route("service/add_client", methods=["POST"])
 
 def service_create_client():
@@ -36,3 +39,6 @@ def service_create_client():
     db.session.commit()
 
     return jsonify({"message": "Клиент {} успешно добавлен в базу.".format(client.name) })
+
+
+

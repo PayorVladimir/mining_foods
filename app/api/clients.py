@@ -7,7 +7,8 @@ import datetime
 from datetime import date
 from flask_login import current_user, login_user, logout_user, login_required
 from .decorators import permission_required
-from sqlalchemy import or_
+from sqlalchemy import or_, Date, cast
+
 
 @api.route('clients/get_quote', methods=['GET'])
 def get_quote():
@@ -20,41 +21,42 @@ def get_quote():
     terminal = Terminal.query.filter(Terminal.uid == terminal_uid).first()
     #check terminal state
     if terminal is None:
-        return not_found("Terminal with this UID is not registered")
+        return not_found("Терминал не зарегистрирован")
 
     if not terminal.is_active:
-        return bad_request("Terminal with this UID is banned")
+        return bad_request("Терминал заблокирован")
 
     if  terminal.verify_token(terminal_token) == False:
-         return bad_request("Wrong terminal credentials")
+         return bad_request("Неверные регистрационные данные терминала")
 
     #Get client data by card id
     client_card_id = request.args.get("client_card_id")
 
     if client_card_id is None or client_card_id == "":
-        return bad_request("Client card ID is not provided")
+        return bad_request("Код карты клиента не предоставлен")
 
 
     client = Client.query.filter(Client.card_id == client_card_id).first()
     # check if user registered
     if client is None:
-        return bad_request("Пользователь не зарегистрирован")
+        return bad_request("Пользователь не зарегистрирован.")
     #check if user is blocked
     if not client.is_active:
-        return bad_request("Пользователь заблокирован")
+        return bad_request("Пользователь заблокирован.")
 
 
     #check group limitations
     if client.group is not None:
         if not client.group.is_active:
-            return bad_request("Группа в которой состоит пользователь заблокирована")
+            return bad_request("Группа в которой состоит пользователь заблокирована.")
 
     #get all logs in last 24 hours ??
-    td = date.today()
-    today = datetime.datetime(day=td.day, year=td.year, month=td.month)
 
-    print(today)
-    logs = Log.query.filter(Log.client_id == client.id).filter(Log.time_stamp > today).all()
+
+
+    logs = Log.query.filter(Log.client_id == client.id).filter(cast(Log.time_stamp, Date) == date.today()).all()
+
+    print([log.to_json() for log  in logs])
 
 
     #check if 5 minutes passed from last log in this terminal, if not - approve
@@ -63,7 +65,9 @@ def get_quote():
         if now - datetime.timedelta(minutes=5) <= logs[0].time_stamp <= now and logs[0].terminal.uid == terminal_uid:
             return jsonify({
             "approved": True,
+            "first_time": False,
             "user_name": client.name,
+            "group": client.group.title if client.group is not None else "без группы",
             "logs": [log.to_json() for log in logs],
             "quota": client.quota,
         })
@@ -74,6 +78,7 @@ def get_quote():
             return jsonify({
                 "approved": False,
                 "user_name": client.name,
+                "group": client.group.title if client.group is not None else "без группы",
                 "logs": [log.to_json() for log in logs],
                 "quota": client.quota
             })
@@ -87,9 +92,12 @@ def get_quote():
     db.session.add(new_log)
     db.session.commit()
 
+    logs = Log.query.filter(Log.client_id == client.id).filter(cast(Log.time_stamp, Date) == date.today()).all()
     return jsonify({
         "approved": True,
+        "first_time": True,
         "user_name": client.name,
+        "group": client.group.title if client.group is not None else "без группы",
         "logs": [log.to_json() for log in logs],
         "quota": client.quota
     })
