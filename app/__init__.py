@@ -29,11 +29,12 @@ def add_cors_headers(response):
 def create_app(config_name):
     app = Flask(__name__)
 
-    jsglue = JSGlue(app)
+
 
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     # implement CORs support
+    jsglue = JSGlue(app)
     app.after_request(add_cors_headers)
 
     db.init_app(app)
