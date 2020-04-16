@@ -41,6 +41,7 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI =  "mysql+pymysql://minecite:DBspmi-20@localhost/foods"
     LOGIN_VIEW = "https://digital.spmi.ru/mining_foods/auth/login"
+    SERVER_NAME = "https://digital.spmi.ru/mining_foods/"
     APPLICATION_ROOT = "/mining_foods"
 
     @classmethod
