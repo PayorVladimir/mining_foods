@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask import request
 from config import config
+from flask_jsglue import JSGlue
 from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
 
 login_manager = LoginManager()
@@ -28,8 +29,7 @@ def add_cors_headers(response):
 def create_app(config_name):
     app = Flask(__name__)
 
-
-
+    jsglue = JSGlue(app)
 
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
