@@ -54,7 +54,7 @@ def get_quote():
 
 
 
-    logs = Log.query.filter(Log.client_id == client.id).filter(cast(Log.time_stamp, Date) == date.today()).all()
+    logs = Log.query.filter(Log.client_id == client.id).filter(cast(Log.time_stamp, Date) == date.today()).order_by(Log.id.desc()).all()
 
     print([log.to_json() for log  in logs])
 
