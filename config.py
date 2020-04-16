@@ -42,9 +42,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI =  "mysql+pymysql://minecite:DBspmi-20@localhost/foods"
     LOGIN_VIEW = "https://digital.spmi.ru/mining_foods/auth/login"
 
-    REVERSE_PROXY_PATH = '/mining_food'
 
-    APPLICATION_ROOT = "/mining_foods"
 
     @classmethod
     def init_app(cls, app):
