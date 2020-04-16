@@ -62,7 +62,7 @@ def login():
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = "https://digital.spmi.ru/mining_foods/"
-        return redirect("https://digital.spmi.ru/mining_foods/"+next_page)
+        return redirect("https://digital.spmi.ru/mining_foods/")
     return render_template('login.html', title='Вход', form=form)
 
 
