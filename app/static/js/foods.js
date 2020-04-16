@@ -1,10 +1,10 @@
 $(function() {
-    $('#groups-combo').combobox('reload', '/api/v1/groups_all');
+    $('#groups-combo').combobox('reload', '/mining_foods/api/v1/groups_all/');
 });
 
 
 
-              $('#dg').datagrid('enableFilter');
+
 
             //terminals logs
           var dgterminals = $('#dg-terminals').datagrid({
@@ -15,7 +15,7 @@ $(function() {
                 onExpandRow: function(index,row){
                     var ddv = $(this).datagrid('getRowDetail',index).find('table.ddv');
                     ddv.datagrid({
-                       url:Flask.url_for("api.get_logs", {terminal_id: row.terminal_id}),
+                        url:'mining_foods/api/v1/logs?terminal_id='+row.terminal_id,
                         fitColumns:true,
                         singleSelect:true,
                         rownumbers:true,
@@ -42,7 +42,7 @@ $(function() {
                     $('#dg-terminals').datagrid('fixDetailRowHeight',index);
                 }
             });
-          dgterminals.datagrid('enableFilter');
+
 
 
 var url;
@@ -51,7 +51,7 @@ var type;
 function clientLogs(){
     var row = $('#dg').datagrid('getSelected');
      $('#client-logs').dialog('open').dialog('center').dialog('setTitle', 'Статистика: '+row.client_name);
-        $('#logs').datagrid({url:Flask.url_for("api.get_logs", {client_id: row.client_id})});
+        $('#logs').datagrid({url:'mining_foods/api/v1/logs?client_id='+row.client_id});
         $('#logs').datagrid('reload');
 }
 
@@ -64,18 +64,18 @@ function clientSearch(){
 function newUser() {
     $('#dlg').dialog('open').dialog('center').dialog('setTitle', 'Новый клиент');
     $('#fm').form('clear');
-     $('#groups-combo').combobox('reload',  Flask.url_for("api.get_all_groups"));
-    url = Flask.url_for("api.create_client");
+     $('#groups-combo').combobox('reload', '/mining_foods/api/v1/groups_all');
+    url = '/mining_foods/api/v1/client';
     type = 'POST';
 }
 
 function editUser() {
     var row = $('#dg').datagrid('getSelected');
-     $('#groups-combo').combobox('reload', '/api/v1/groups_all');
+     $('#groups-combo').combobox('reload', '/mining_foods/api/v1/groups_all');
     if (row) {
         $('#dlg').dialog('open').dialog('center').dialog('setTitle', 'Редактировать профиль клиента');
         $('#fm').form('load', row);
-          url =  Flask.url_for("api.edit_client", {id: row.client_id});
+        url = '/mining_foods/api/v1/client' + row.client_id;
         type = 'PUT';
 
     }
@@ -83,7 +83,7 @@ function editUser() {
 
 function blockUser() {
     var row = $('#dg').datagrid('getSelected');
-    var url = Flask.url_for("api.block_client");
+    var url = "/mining_foods/api/v1/block_client";
     if (row) {
         $.messager.confirm('Заблокировать клиента', 'Вы уверены, что хотите заблокировать этого клиента?', function (r) {
             if (r) {
@@ -123,7 +123,7 @@ function blockUser() {
 function activateUser() {
 
      var row = $('#dg').datagrid('getSelected');
-    var url = Flask.url_for("api.activate_client");;
+    var url = "/mining_foods/api/v1/activate_client";
     if (row) {
         $.messager.confirm('Заблокировать клиента', 'Вы уверены, что хотите разблокировать этого клиента?', function (r) {
             if (r) {
@@ -198,7 +198,7 @@ function saveUser() {
 
 function destroyUser() {
     var row = $('#dg').datagrid('getSelected');
-    var url = Flask.url_for("api.delete_client");
+    var url = "/mining_foods/api/v1/client";
     if (row) {
         $.messager.confirm('Удалить клиента', 'Вы уверены, что хотите удалить профиль этого клиента?', function (r) {
             if (r) {
@@ -238,13 +238,13 @@ function destroyUser() {
 function newAccount() {
     $('#dlg-users').dialog('open').dialog('center').dialog('setTitle', 'Новый пользователь');
     $('#fm-users').form('clear');
-    url = Flask.url_for("api.new_user");
+    url = '/mining_foods/api/v1/new_user';
     type = 'POST';
 }
 
 function blockAccount() {
      var row = $('#dg-users').datagrid('getSelected');
-    var url =  Flask.url_for("api.block_user");
+    var url = "/mining_foods/api/v1/block_user";
     if (row) {
         $.messager.confirm('Заблокировать пользователя', 'Вы уверены, что хотите заблокировать этого пользователя?', function (r) {
             if (r) {
@@ -283,7 +283,7 @@ function blockAccount() {
 
 function deleteAccount(){
     var row = $('#dg-users').datagrid('getSelected');
-    var url =  Flask.url_for("api.delete_user");
+    var url = "/mining_foods/api/v1/users";
     if (row) {
         $.messager.confirm('Удалить клиента', 'Вы уверены, что хотите удалить профиль этого пользователя?', function (r) {
             if (r) {
@@ -325,7 +325,7 @@ function editAccount() {
     if (row) {
         $('#dlg-users').dialog('open').dialog('center').dialog('setTitle', 'Редактировать профиль клиента');
         $('#fm-users').form('load', row);
-          url =  Flask.url_for("api.update_user", {id: row.user_id});
+        url = '/mining_foods/api/v1/users/' + row.user_id;
         type = 'PUT';
 
     }
@@ -365,7 +365,7 @@ function saveAccount() {
 
 function activateAccount() {
      var row = $('#dg-users').datagrid('getSelected');
-    var url =  Flask.url_for("api.activate_user");
+    var url = "/mining_foods/api/v1/activate_user";
     if (row) {
         $.messager.confirm('Разблокировать пользователя', 'Вы уверены, что хотите разблокировать этого пользователя?', function (r) {
             if (r) {
@@ -404,7 +404,7 @@ function activateAccount() {
 
 function blockTerminal() {
     var row = $('#dg-terminals').datagrid('getSelected');
-    var url = Flask.url_for("api.block_terminal");
+    var url = "/mining_foods/api/v1/block_terminal";
     if (row) {
         $.messager.confirm('Заблокировать терминал', 'Вы уверены, что хотите заблокировать этот терминал?', function (r) {
             if (r) {
@@ -443,7 +443,7 @@ function blockTerminal() {
 
 function activateTerminal() {
     var row = $('#dg-terminals').datagrid('getSelected');
-    var url =  Flask.url_for("api.activate_terminal");
+    var url = "/mining_foods/api/v1/activate_terminal";
     if (row) {
         $.messager.confirm('Активировать терминал', 'Вы уверены, что хотите активировать этот терминал?', function (r) {
             if (r) {
@@ -482,7 +482,7 @@ function activateTerminal() {
 
 function deleteTerminal() {
     var row = $('#dg-terminals').datagrid('getSelected');
-    var url =  Flask.url_for("api.delete_terminal");
+    var url = "/mining_foods/api/v1/delete_terminal";
     if (row) {
         $.messager.confirm('Удалить терминал', 'Вы уверены, что хотите удалить этот терминал? Терминал будет заблокирован, а все записи о нем стерты из базы данных.', function (r) {
             if (r) {
@@ -526,7 +526,7 @@ function editTerminal() {
         $('#dlg-terminals').dialog('open').dialog('center').dialog('setTitle', 'Редактировать запись о терминале');
         $('#fm-terminals').form('load', row);
 
-      url =  Flask.url_for("api.update_terminal", {id: row.terminal_id});
+        url = '/mining_foods/api/v1/terminals/'+ row.terminal_id;
 
     }
 
@@ -567,13 +567,13 @@ function saveTerminal() {
 function newGroup() {
     $('#dlg-groups').dialog('open').dialog('center').dialog('setTitle', 'Новая группа клиентов');
     $('#fm-groups').form('clear');
-    url = Flask.url_for("api.new_group");
+    url = '/mining_foods/api/v1/new_group';
     type = 'POST';
 }
 
 function blockGroup() {
      var row = $('#dg-groups').datagrid('getSelected');
-    var url = Flask.url_for("api.block_group");
+    var url = "/mining_foods/api/v1/block_group";
     if (row) {
         $.messager.confirm('Заблокировать группу', 'Вы уверены, что хотите заблокировать эту  группу клиентов?', function (r) {
             if (r) {
@@ -613,7 +613,7 @@ function blockGroup() {
 
 function activateGroup() {
      var row = $('#dg-groups').datagrid('getSelected');
-    var url =  Flask.url_for("api.activate_group");
+    var url = "/mining_foods/api/v1/activate_group";
     if (row) {
         $.messager.confirm('Разблокировать группу', 'Вы уверены, что хотите разблокировать эту  группу клиентов?', function (r) {
             if (r) {
@@ -652,7 +652,7 @@ function activateGroup() {
 
 function deleteGroup(){
     var row = $('#dg-groups').datagrid('getSelected');
-    var url = Flask.url_for("api.delete_group");
+    var url = "/mining_foods/api/v1/delete_group";
     if (row) {
         $.messager.confirm('Удалить группу', 'Вы уверены, что хотите удалить профиль этой группы клиентов?', function (r) {
             if (r) {
@@ -694,7 +694,7 @@ function editGroup() {
     if (row) {
         $('#dlg-groups').dialog('open').dialog('center').dialog('setTitle', 'Редактировать профиль группы');
         $('#fm-groups').form('load', row);
-        url = Flask.url_for("api.update_group", {id: row.group_id});
+        url = '/mining_foods/api/v1/groups/' + row.group_id;
         type = 'PUT';
 
     }
