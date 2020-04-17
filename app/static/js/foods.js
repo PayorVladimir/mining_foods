@@ -75,7 +75,7 @@ function editUser() {
     if (row) {
         $('#dlg').dialog('open').dialog('center').dialog('setTitle', 'Редактировать профиль клиента');
         $('#fm').form('load', row);
-        url = '/mining_foods/api/v1/client/' + row.client_id;
+        url = '/mining_foods/api/v1/client/' + row.client_id ;
         type = 'PUT';
 
     }

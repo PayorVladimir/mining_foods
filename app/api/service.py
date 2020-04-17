@@ -18,8 +18,7 @@ def create_app_token():
     db.session.commit()
 
 
-
-
+#добавление клиента в базу
 @api.route("service/add_client", methods=["POST"])
 
 def service_create_client():
@@ -29,10 +28,10 @@ def service_create_client():
     token = request.args.get("token")
 
     if token == "" or token is None:
-        return bad_request("No token")
+        return bad_request("Для доступа к этому методу необходимо предоставить токен. Для получения токена обратитесь к администратору.")
 
-    if Setting.query.filter(Setting.value == token, Setting.label == "service_token").first() is None:
-        return bad_request("Wrong token")
+    if Setting.query.filter(Setting.value == token).first() is None:
+        return bad_request("Неверный токен")
 
     client = Client.from_json(request.json)
     db.session.add(client)
@@ -42,3 +41,206 @@ def service_create_client():
 
 
 
+@api.route("service/block_client", methods=["PUT"])
+@login_required
+@permission_required(Permission.MODERATE)
+def block_client():
+    if not request.is_json:
+        return bad_request("No JSON data")
+
+    token = request.args.get("token")
+
+    if token == "" or token is None:
+        return bad_request(
+            "Для доступа к этому методу необходимо предоставить токен. Для получения токена обратитесь к администратору.")
+
+    if Setting.query.filter(Setting.value == token).first() is None:
+        return bad_request("Неверный токен")
+
+    client_id = request.json["client_id"]
+
+    client = Client.query.get_or_404(client_id)
+
+    client.is_active = False
+    db.session.add(client)
+    db.session.commit()
+    return jsonify({"message": "Клиент {} заблокирован   .".format(client.name)})
+
+
+
+@api.route("service/activate_client", methods=["PUT"])
+@login_required
+@permission_required(Permission.MODERATE)
+def activate_client():
+    if not request.is_json:
+        return bad_request("No JSON data")
+
+    token = request.args.get("token")
+
+    if token == "" or token is None:
+        return bad_request(
+            "Для доступа к этому методу необходимо предоставить токен. Для получения токена обратитесь к администратору.")
+
+    if Setting.query.filter(Setting.value == token).first() is None:
+        return bad_request("Неверный токен")
+
+    client_id = request.json["client_id"]
+    client = Client.query.get_or_404(client_id)
+
+
+    client.is_active = True
+    db.session.add(client)
+    db.session.commit()
+    return jsonify({"message": "Клиент {} заблокирован   .".format(client.name)})
+
+
+
+@api.route("service/client/<int:id>/", methods=["PUT"])
+@login_required
+@permission_required(Permission.MODERATE)
+def edit_client(id):
+    if not request.is_json:
+        return bad_request("No JSON data")
+
+    token = request.args.get("token")
+
+    if token == "" or token is None:
+        return bad_request(
+            "Для доступа к этому методу необходимо предоставить токен. Для получения токена обратитесь к администратору.")
+
+    if Setting.query.filter(Setting.value == token).first() is None:
+        return bad_request("Неверный токен")
+
+    client = Client.query.get_or_404(id)
+
+    client_name = request.json["client_name"]
+
+    if len(client_name) > 128:
+        return bad_request("Имя клиента не должно превышать 128 символов.")
+
+    if Client.query.filter(Client.name == client_name, Client.id != id).first() is not None:
+        return bad_request("Клиент с таким именем уже существует")
+
+    if client_name is not None and client_name != "":
+        client.name = client_name
+
+
+    card_id = request.json["card_id"]
+
+    if Client.query.filter(Client.card_id == card_id, Client.id != id).first() is not None:
+        return bad_request("Клиент с таким ID пропуска уже существует")
+
+    if card_id is not None and card_id != "":
+        client.card_id = card_id
+
+    quota = int(request.json["quota"])
+
+    if quota > 100:
+        return bad_request("Квота питания не должна превышать 100 раз в день.")
+
+    if quota is not None and quota != "":
+        client.quota = quota
+
+    group_id = request.json["group"]
+
+    if group_id == "" or group_id is None:
+        client.group_id = None
+    elif group_id.isdigit():
+        client.group_id = group_id
+
+    db.session.add(client)
+    db.session.commit()
+    return jsonify({"message": "Клиент {} успешно обновлен в базе данных.".format(client.name)})
+
+
+
+
+
+
+
+#добавление группы в базу
+@api.route('service/add_group', methods=['POST'])
+@login_required
+@permission_required(Permission.MODERATE)
+def new_group():
+    if not request.is_json:
+        return bad_request("No JSON data")
+
+    token = request.args.get("token")
+
+    if token == "" or token is None:
+        return bad_request("Для доступа к этому методу необходимо предоставить токен. Для получения токена обратитесь к администратору.")
+
+    if Setting.query.filter(Setting.value == token).first() is None:
+        return bad_request("Неверный токен")
+
+    title = request.json["group_title"]
+    if title is None or title == "":
+        return bad_request("Название группы не указано")
+    if Clientgroup.query.filter(Clientgroup.title == title).first() is not None:
+        return bad_request("Группа с таким названием уже существует")
+
+    valid_thru = datetime.datetime.now()
+
+    if valid_thru is None or valid_thru == "":
+        return bad_request("Дата блокировки группы не указана")
+
+    user = Clientgroup(is_active=True, title=title, valid_thru=valid_thru)
+
+    db.session.add(user)
+    db.session.commit()
+    return jsonify({"message": "Группа успешно создана"})
+
+
+#блокировка группы
+@api.route('service/block_group', methods=['PUT'])
+@login_required
+@permission_required(Permission.MODERATE)
+def block_group():
+    if not request.is_json:
+        return bad_request("No JSON data")
+
+    token = request.args.get("token")
+
+    if token == "" or token is None:
+        return bad_request(
+            "Для доступа к этому методу необходимо предоставить токен. Для получения токена обратитесь к администратору.")
+
+    if Setting.query.filter(Setting.value == token).first() is None:
+        return bad_request("Неверный токен")
+    group_id = request.json["group_id"]
+
+    group = Clientgroup.query.get_or_404(group_id)
+    group.is_active = False
+
+    db.session.add(group)
+    db.session.commit()
+
+    return jsonify({ "message":"Группа {} заблокирована".format(group.title)})
+
+
+#активация группы
+@api.route('service/activate_group', methods=['PUT'])
+@login_required
+@permission_required(Permission.MODERATE)
+def activate_group():
+    if not request.is_json:
+        return bad_request("No JSON data")
+
+    token = request.args.get("token")
+
+    if token == "" or token is None:
+        return bad_request(
+            "Для доступа к этому методу необходимо предоставить токен. Для получения токена обратитесь к администратору.")
+
+    if Setting.query.filter(Setting.value == token).first() is None:
+        return bad_request("Неверный токен")
+
+    group_id = request.json["group_id"]
+
+    group = Clientgroup.query.get_or_404(group_id)
+    group.is_active = True
+    db.session.add(group)
+    db.session.commit()
+
+    return jsonify({ "message":"Группа {} разблокирована".format(group.title)})
