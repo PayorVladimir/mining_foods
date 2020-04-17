@@ -67,6 +67,7 @@ def get_quote():
             "approved": True,
             "first_time": False,
             "user_name": client.name,
+            "group_id": client.group_id if client.group is not None else -1,
             "group": client.group.title if client.group is not None else "без группы",
             "logs": [log.to_json() for log in logs],
             "quota": client.quota,
@@ -78,6 +79,7 @@ def get_quote():
             return jsonify({
                 "approved": False,
                 "user_name": client.name,
+                "group_id": client.group_id if client.group is not None else -1,
                 "group": client.group.title if client.group is not None else "без группы",
                 "logs": [log.to_json() for log in logs],
                 "quota": client.quota
