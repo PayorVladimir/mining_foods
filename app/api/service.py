@@ -44,7 +44,7 @@ def service_create_client():
 @api.route("service/block_client", methods=["PUT"])
 @login_required
 @permission_required(Permission.MODERATE)
-def block_client():
+def service_block_client():
     if not request.is_json:
         return bad_request("No JSON data")
 
@@ -71,7 +71,7 @@ def block_client():
 @api.route("service/activate_client", methods=["PUT"])
 @login_required
 @permission_required(Permission.MODERATE)
-def activate_client():
+def service_activate_client():
     if not request.is_json:
         return bad_request("No JSON data")
 
@@ -98,7 +98,7 @@ def activate_client():
 @api.route("service/client/<int:id>/", methods=["PUT"])
 @login_required
 @permission_required(Permission.MODERATE)
-def edit_client(id):
+def service_edit_client(id):
     if not request.is_json:
         return bad_request("No JSON data")
 
@@ -162,7 +162,7 @@ def edit_client(id):
 @api.route('service/add_group', methods=['POST'])
 @login_required
 @permission_required(Permission.MODERATE)
-def new_group():
+def service_new_group():
     if not request.is_json:
         return bad_request("No JSON data")
 
@@ -196,7 +196,7 @@ def new_group():
 @api.route('service/block_group', methods=['PUT'])
 @login_required
 @permission_required(Permission.MODERATE)
-def block_group():
+def service_block_group():
     if not request.is_json:
         return bad_request("No JSON data")
 
@@ -223,7 +223,7 @@ def block_group():
 @api.route('service/activate_group', methods=['PUT'])
 @login_required
 @permission_required(Permission.MODERATE)
-def activate_group():
+def service_activate_group():
     if not request.is_json:
         return bad_request("No JSON data")
 
