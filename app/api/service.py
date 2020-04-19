@@ -4,6 +4,7 @@ from . import api
 from ..models import Terminal, Log, Client, Permission, Setting
 from .errors import forbidden, bad_request, not_found
 import datetime
+from datetime import date
 from flask_login import current_user, login_user, logout_user, login_required
 from .decorators import permission_required
 from sqlalchemy import or_, Date, cast
