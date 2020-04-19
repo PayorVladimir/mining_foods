@@ -20,7 +20,6 @@ def create_app_token():
 
 #добавление клиента в базу
 @api.route("service/add_client", methods=["POST"])
-
 def service_create_client():
     if not request.is_json :
         return bad_request("No JSON data")
@@ -42,8 +41,6 @@ def service_create_client():
 
 
 @api.route("service/block_client", methods=["PATCH"])
-
-@permission_required(Permission.MODERATE)
 def service_block_client():
     if not request.is_json:
         return bad_request("No JSON data")
@@ -67,8 +64,6 @@ def service_block_client():
     return jsonify({"message": "Клиент {} заблокирован   .".format(client.name)})
 
 @api.route("service/activate_client", methods=["PATCH"])
-
-@permission_required(Permission.MODERATE)
 def service_activate_client():
     if not request.is_json:
         return bad_request("No JSON data")
@@ -97,8 +92,6 @@ def service_activate_client():
 
 
 @api.route("service/client/<int:card_id>/", methods=["PUT"])
-
-@permission_required(Permission.MODERATE)
 def service_edit_client(card_id):
     if not request.is_json:
         return bad_request("No JSON data")
@@ -198,8 +191,6 @@ def service_new_group():
 
 #блокировка группы
 @api.route('service/block_group', methods=['PUT'])
-
-@permission_required(Permission.MODERATE)
 def service_block_group():
     if not request.is_json:
         return bad_request("No JSON data")
@@ -224,8 +215,6 @@ def service_block_group():
 
 #активация группы
 @api.route('service/activate_group', methods=['PUT'])
-@login_required
-@permission_required(Permission.MODERATE)
 def service_activate_group():
     if not request.is_json:
         return bad_request("No JSON data")
