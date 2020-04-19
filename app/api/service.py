@@ -114,40 +114,45 @@ def service_edit_client(card_id):
     if client is None:
         return bad_request("Клиент с таким пропуском не найден")
 
-    client_name = request.json["client_name"]
+    if "client_name" in request.json:
 
-    if len(client_name) > 128:
-        return bad_request("Имя клиента не должно превышать 128 символов.")
+        client_name = request.json["client_name"]
 
-    if Client.query.filter(Client.name == client_name, Client.id != id).first() is not None:
-        return bad_request("Клиент с таким именем уже существует")
+        if len(client_name) > 128:
+            return bad_request("Имя клиента не должно превышать 128 символов.")
 
-    if client_name is not None and client_name != "":
-        client.name = client_name
+        if Client.query.filter(Client.name == client_name, Client.card_id != card_id).first() is not None:
+            return bad_request("Клиент с таким именем уже существует")
 
+        if client_name is not None and client_name != "":
+            client.name = client_name
 
-    new_card_id = request.json["card_id"]
+    if "card_id" in request.json:
+        new_card_id = request.json["card_id"]
 
-    if Client.query.filter(Client.card_id == new_card_id, Client.id != id).first() is not None:
-        return bad_request("Клиент с таким ID пропуска уже существует")
+        if Client.query.filter(Client.card_id == new_card_id, Client.id != id).first() is not None:
+            return bad_request("Клиент с таким ID пропуска уже существует")
 
-    if new_card_id is not None and new_card_id != "":
-        client.card_id = new_card_id
+        if new_card_id is not None and new_card_id != "":
+            client.card_id = new_card_id
 
-    quota = int(request.json["quota"])
+    if "quota" in request.json:
+        quota = int(request.json["quota"])
 
-    if quota > 100:
-        return bad_request("Квота питания не должна превышать 100 раз в день.")
+        if quota > 100:
+            return bad_request("Квота питания не должна превышать 100 раз в день.")
 
-    if quota is not None and quota != "":
-        client.quota = quota
+        if quota is not None and quota != "":
+            client.quota = quota
 
-    group_id = request.json["group"]
+    if "group" in request.json:
 
-    if group_id == "" or group_id is None:
-        client.group_id = None
-    elif group_id.isdigit():
-        client.group_id = group_id
+        group_id = request.json["group"]
+
+        if group_id == "" or group_id is None:
+            client.group_id = None
+        elif group_id.isdigit():
+            client.group_id = group_id
 
     db.session.add(client)
     db.session.commit()
