@@ -71,7 +71,7 @@ def get_quote():
             "group_id": client.group_id if client.group is not None else -1,
             "group": client.group.title if client.group is not None else "без группы",
             "logs": [log.to_json() for log in logs],
-            "terminal_total_requests": terminal.total_requests,
+            "terminal_total_requests": Log.query.filter(cast(Log.time_stamp, Date) == date.today()).count(),
             "terminal_today_requests": Log.query.filter(Log.terminal_id == terminal.id).filter(cast(Log.time_stamp, Date) == date.today()).count(),
             "quota": client.quota,
         })
