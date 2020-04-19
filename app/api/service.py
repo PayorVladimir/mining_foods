@@ -239,8 +239,7 @@ def service_activate_group():
 
 @api.route('service/terminal_stats/', methods=['GET'])
 def get_terminal_stats():
-    if not request.is_json:
-        return bad_request("No JSON data")
+
 
     token = request.args.get("token")
     uid = request.args.get("uid")
