@@ -41,8 +41,8 @@ def service_create_client():
 
 
 
-@api.route("service/block_client", methods=["PUT"])
-@login_required
+@api.route("service/block_client", methods=["PATCH"])
+
 @permission_required(Permission.MODERATE)
 def service_block_client():
     if not request.is_json:
@@ -66,10 +66,8 @@ def service_block_client():
     db.session.commit()
     return jsonify({"message": "Клиент {} заблокирован   .".format(client.name)})
 
+@api.route("service/activate_client", methods=["PATCH"])
 
-
-@api.route("service/activate_client", methods=["PUT"])
-@login_required
 @permission_required(Permission.MODERATE)
 def service_activate_client():
     if not request.is_json:
@@ -84,8 +82,11 @@ def service_activate_client():
     if Setting.query.filter(Setting.value == token).first() is None:
         return bad_request("Неверный токен")
 
-    client_id = request.json["client_id"]
-    client = Client.query.get_or_404(client_id)
+    card_id = request.json["card_id"]
+    client = Client.query.filter(Client.card_id==card_id).first()
+
+    if client is None:
+        return bad_request("Клиент с таким пропуском не найден")
 
 
     client.is_active = True
@@ -95,10 +96,10 @@ def service_activate_client():
 
 
 
-@api.route("service/client/<int:id>/", methods=["PUT"])
-@login_required
+@api.route("service/client/<int:card_id>/", methods=["PUT"])
+
 @permission_required(Permission.MODERATE)
-def service_edit_client(id):
+def service_edit_client(card_id):
     if not request.is_json:
         return bad_request("No JSON data")
 
@@ -111,7 +112,10 @@ def service_edit_client(id):
     if Setting.query.filter(Setting.value == token).first() is None:
         return bad_request("Неверный токен")
 
-    client = Client.query.get_or_404(id)
+    client = Client.query.filter(Client.card_id == card_id).first()
+
+    if client is None:
+        return bad_request("Клиент с таким пропуском не найден")
 
     client_name = request.json["client_name"]
 
@@ -125,13 +129,13 @@ def service_edit_client(id):
         client.name = client_name
 
 
-    card_id = request.json["card_id"]
+    new_card_id = request.json["card_id"]
 
-    if Client.query.filter(Client.card_id == card_id, Client.id != id).first() is not None:
+    if Client.query.filter(Client.card_id == new_card_id, Client.id != id).first() is not None:
         return bad_request("Клиент с таким ID пропуска уже существует")
 
-    if card_id is not None and card_id != "":
-        client.card_id = card_id
+    if new_card_id is not None and new_card_id != "":
+        client.card_id = new_card_id
 
     quota = int(request.json["quota"])
 
@@ -160,7 +164,7 @@ def service_edit_client(id):
 
 #добавление группы в базу
 @api.route('service/add_group', methods=['POST'])
-@login_required
+
 @permission_required(Permission.MODERATE)
 def service_new_group():
     if not request.is_json:
@@ -194,7 +198,7 @@ def service_new_group():
 
 #блокировка группы
 @api.route('service/block_group', methods=['PUT'])
-@login_required
+
 @permission_required(Permission.MODERATE)
 def service_block_group():
     if not request.is_json:
@@ -217,7 +221,6 @@ def service_block_group():
     db.session.commit()
 
     return jsonify({ "message":"Группа {} заблокирована".format(group.title)})
-
 
 #активация группы
 @api.route('service/activate_group', methods=['PUT'])
@@ -244,3 +247,39 @@ def service_activate_group():
     db.session.commit()
 
     return jsonify({ "message":"Группа {} разблокирована".format(group.title)})
+
+
+@api.route('service/terminal_stats/', methods=['GET'])
+def get_terminal_stats():
+    if not request.is_json:
+        return bad_request("No JSON data")
+
+    token = request.args.get("token")
+
+    if token == "" or token is None:
+        return bad_request(
+            "Для доступа к этому методу необходимо предоставить токен. Для получения токена обратитесь к администратору.")
+
+    if Setting.query.filter(Setting.value == token).first() is None:
+        return bad_request("Неверный токен")
+
+    stats = []
+    interval_start = datetime.datetime(year=2000)
+    interval_end = datetime.datetime.now
+
+    if "from" in request:
+        interval_start_str = request.json["from"]
+        interval_start = datetime.strptime(interval_start_str, "%Y-%m-%d, %H:%M:%S")
+    if "to" in request:
+        interval_end_str = request.json["to"]
+        interval_end = datetime.strptime(interval_end_str, "%Y-%m-%d, %H:%M:%S")
+
+    if "terminal_id" in request.json:
+        terminal_id = request.json["terminal_id"]
+        if terminal_id is not None and terminal_id != "":
+            stats = Log.query.filter(Log.terminal_id == terminal_id, Log.time_stamp.between(interval_start,interval_end )).all()
+
+    else:
+        stats = Log.query.filter(Log.time_stamp.between(interval_start,interval_end )).all()
+
+    return  jsonify({ "total": len(stats), "logs": [log.to_json() for log in stats], "from":interval_start_str, "to": interval_end_str } )

@@ -135,7 +135,7 @@ def load_user(user_id):
 
 class Client(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True, index=True)
+    name = db.Column(db.String(64), index=True)
     card_id = db.Column(db.String(64), unique=True, index=True)
     quota = db.Column(db.SMALLINT, default=1)
     is_active = db.Column(db.BOOLEAN, default=True)
