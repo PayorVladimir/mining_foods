@@ -179,7 +179,7 @@ def block_client():
     client.is_active = False
     db.session.add(client)
     db.session.commit()
-    return jsonify({"message": "Клиент {} заблокирован   .".format(client.name)})
+    return jsonify({"message": "Клиент {} заблокирован.".format(client.name)})
 
 
 
@@ -196,7 +196,7 @@ def activate_client():
     client.is_active = True
     db.session.add(client)
     db.session.commit()
-    return jsonify({"message": "Клиент {} заблокирован   .".format(client.name)})
+    return jsonify({"message": "Клиент {} активирован.".format(client.name)})
 
 
 
