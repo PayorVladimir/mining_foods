@@ -237,15 +237,22 @@ def service_activate_group():
 
 
 
-@api.route('service/terminal_stats/<int:uid>/', methods=['GET'])
-def get_terminal_stats(uid):
+@api.route('service/terminal_stats/', methods=['GET'])
+def get_terminal_stats():
     if not request.is_json:
         return bad_request("No JSON data")
 
     token = request.args.get("token")
+    uid = request.args.get("uid")
+
 
     if Setting.query.filter(Setting.value == token).first() is None:
         return bad_request("Неверный токен")
+
+
+    if uid == "" or uid is None:
+        return bad_request(
+            "Не указан идентификатор терминала.")
 
     if token == "" or token is None:
         return bad_request(
