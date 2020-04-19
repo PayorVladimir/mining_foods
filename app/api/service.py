@@ -54,9 +54,11 @@ def service_block_client():
     if Setting.query.filter(Setting.value == token).first() is None:
         return bad_request("Неверный токен")
 
-    client_id = request.json["client_id"]
+    card_id = request.json["card_id"]
+    client = Client.query.filter(Client.card_id == card_id).first()
 
-    client = Client.query.get_or_404(client_id)
+    if client is None:
+        return bad_request("Клиент с таким пропуском не найден")
 
     client.is_active = False
     db.session.add(client)
