@@ -32,6 +32,7 @@ def get_quote():
     #Get client data by card id
     client_card_id = request.args.get("client_card_id")
 
+
     if client_card_id is None or client_card_id == "":
         return bad_request("Код карты клиента не предоставлен")
 
@@ -70,6 +71,8 @@ def get_quote():
             "group_id": client.group_id if client.group is not None else -1,
             "group": client.group.title if client.group is not None else "без группы",
             "logs": [log.to_json() for log in logs],
+            "terminal_total_requests": terminal.total_requests,
+            "terminal_today_requests": Log.query.filter(Log.terminal_id == terminal.id).filter(cast(Log.time_stamp, Date) == date.today()).count(),
             "quota": client.quota,
         })
 
@@ -79,9 +82,11 @@ def get_quote():
             return jsonify({
                 "approved": False,
                 "user_name": client.name,
-
+                "group_id": client.group_id if client.group is not None else -1,
                 "group": client.group.title if client.group is not None else "без группы",
                 "logs": [log.to_json() for log in logs],
+                "terminal_total_requests": terminal.total_requests,
+                "terminal_today_requests": Log.query.filter(Log.terminal_id == terminal.id).filter(cast(Log.time_stamp, Date) == date.today()).count(),
                 "quota": client.quota
             })
 
@@ -102,6 +107,8 @@ def get_quote():
         "group_id": client.group_id if client.group is not None else -1,
         "group": client.group.title if client.group is not None else "без группы",
         "logs": [log.to_json() for log in logs],
+        "terminal_total_requests": terminal.total_requests,
+        "terminal_today_requests": Log.query.filter(Log.terminal_id == terminal.id).filter(cast(Log.time_stamp, Date) == date.today()).count(),
         "quota": client.quota
     })
 
