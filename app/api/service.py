@@ -130,7 +130,7 @@ def service_edit_client(card_id):
     if "card_id" in request.json:
         new_card_id = request.json["card_id"]
 
-        if Client.query.filter(Client.card_id == new_card_id, Client.id != id).first() is not None:
+        if Client.query.filter(Client.card_id == new_card_id, Client.id != client.id).first() is not None:
             return bad_request("Клиент с таким ID пропуска уже существует")
 
         if new_card_id is not None and new_card_id != "":

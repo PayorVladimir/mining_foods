@@ -45,7 +45,6 @@ class ProductionConfig(Config):
     REVERSE_PROXY_PATH = '/mining_foods'
 
 
-
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
