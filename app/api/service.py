@@ -151,7 +151,7 @@ def service_edit_client(card_id):
 
         if group_id == "" or group_id is None:
             client.group_id = None
-        elif group_id.isdigit():
+        else:
             client.group_id = group_id
 
     db.session.add(client)
