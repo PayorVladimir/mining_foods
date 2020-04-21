@@ -35,7 +35,7 @@ def create_app(config_name):
     config[config_name].init_app(app)
     # implement CORs support
     jsglue = JSGlue(app)
-    app.before_request(add_cors_headers())
+    app.before_request(add_cors_headers)
 
     db.init_app(app)
     login_manager.init_app(app)
