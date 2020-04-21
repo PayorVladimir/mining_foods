@@ -200,7 +200,7 @@ def activate_client():
 
 
 
-@api.route("client/<int:id>/", methods=["PUT"])
+@api.route("client/<int:id>", methods=["PUT"])
 @login_required
 @permission_required(Permission.MODERATE)
 def edit_client(id):
