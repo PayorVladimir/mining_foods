@@ -32,6 +32,14 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:{11111111}@localhost/foods?charset=utf8mb4"
     APPLICATION_ROOT = "/mining_foods"
 
+    @classmethod
+    def init_app(cls, app):
+        Config.init_app(app)
+
+        # email errors to the administrators
+        import logging
+        logging.basicConfig(filename='food.log', level=logging.DEBUG)
+
 
 class TestingConfig(Config):
     TESTING = True

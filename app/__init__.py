@@ -7,6 +7,12 @@ from flask import request
 from config import config
 from flask_jsglue import JSGlue
 from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
+import datetime
+import time
+
+import colors
+from flask import g, request
+from rfc3339 import rfc3339
 
 login_manager = LoginManager()
 
@@ -36,6 +42,51 @@ def create_app(config_name):
     # implement CORs support
     jsglue = JSGlue(app)
     app.after_request(add_cors_headers)
+
+    @app.before_request
+    def start_timer():
+        g.start = time.time()
+
+    @app.after_request
+    def log_request(response):
+        if request.path == '/favicon.ico':
+            return response
+        elif request.path.startswith('/static'):
+            return response
+
+        now = time.time()
+        duration = round(now - g.start, 2)
+        dt = datetime.datetime.fromtimestamp(now)
+        timestamp = rfc3339(dt, utc=True)
+
+        ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+        host = request.host.split(':', 1)[0]
+        args = dict(request.args)
+
+        log_params = [
+            ('method', request.method, 'blue'),
+            ('path', request.path, 'blue'),
+            ('status', response.status_code, 'yellow'),
+            ('duration', duration, 'green'),
+            ('time', timestamp, 'magenta'),
+            ('ip', ip, 'red'),
+            ('host', host, 'red'),
+            ('params', args, 'blue')
+        ]
+
+        request_id = request.headers.get('X-Request-ID')
+        if request_id:
+            log_params.append(('request_id', request_id, 'yellow'))
+
+        parts = []
+        for name, value, color in log_params:
+            part = colors.color("{}={}".format(name, value), fg=color)
+            parts.append(part)
+        line = " ".join(parts)
+
+        app.logger.info(line)
+
+        return response
 
     db.init_app(app)
     login_manager.init_app(app)
