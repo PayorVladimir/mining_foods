@@ -37,6 +37,11 @@ def get_quote():
         return bad_request("Код карты клиента не предоставлен")
 
 
+    #учитываем сдвиг карт для студентов
+    #TODO: научиться отличать карты старого образца
+    client_card_id = int(client_card_id) + 65536
+
+
     client = Client.query.filter(Client.card_id == client_card_id).first()
     # check if user registered
     if client is None:
