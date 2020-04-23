@@ -8,7 +8,7 @@ import datetime
 from sqlalchemy import desc
 
 
-@api.route('logs/', methods=['POST'])
+@api.route('logs/', methods=['POST', 'GET'])
 @login_required
 def get_logs():
    client_id = request.args.get("client_id")

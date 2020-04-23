@@ -19,7 +19,6 @@ def create_app_token():
 
     db.session.commit()
 
-
 #добавление клиента в базу
 @api.route("service/add_client", methods=["POST"])
 def service_create_client():
@@ -39,8 +38,6 @@ def service_create_client():
     db.session.commit()
 
     return jsonify({"message": "Клиент {} успешно добавлен в базу.".format(client.name) })
-
-
 
 @api.route("service/block_client", methods=["PATCH"])
 def service_block_client():
@@ -92,8 +89,6 @@ def service_activate_client():
     db.session.add(client)
     db.session.commit()
     return jsonify({"message": "Клиент {} заблокирован   .".format(client.name)})
-
-
 
 @api.route("service/client/<int:card_id>/", methods=["PUT"])
 def service_edit_client(card_id):
@@ -158,12 +153,8 @@ def service_edit_client(card_id):
     db.session.commit()
     return jsonify({"message": "Клиент {} успешно обновлен в базе данных.".format(client.name)})
 
-
-
 #добавление группы в базу
 @api.route('service/add_group', methods=['POST'])
-
-@permission_required(Permission.MODERATE)
 def service_new_group():
     if not request.is_json:
         return bad_request("No JSON data")
@@ -179,6 +170,7 @@ def service_new_group():
     title = request.json["group_title"]
     if title is None or title == "":
         return bad_request("Название группы не указано")
+
     if Clientgroup.query.filter(Clientgroup.title == title).first() is not None:
         return bad_request("Группа с таким названием уже существует")
 
@@ -192,7 +184,6 @@ def service_new_group():
     db.session.add(user)
     db.session.commit()
     return jsonify({"message": "Группа успешно создана"})
-
 
 #блокировка группы
 @api.route('service/block_group', methods=['PUT'])
@@ -242,8 +233,7 @@ def service_activate_group():
 
     return jsonify({ "message":"Группа {} разблокирована".format(group.title)})
 
-
-
+#cтатистика по терминлу
 @api.route('service/terminal_stats/', methods=['GET'])
 def get_terminal_stats():
 
@@ -271,3 +261,60 @@ def get_terminal_stats():
 
     return  jsonify({ "terminal_total_requests": Log.query.filter(cast(Log.time_stamp, Date) == date.today()).count(),
                       "terminal_today_requests": Log.query.filter(Log.terminal_id == terminal.id).filter(cast(Log.time_stamp, Date) == date.today()).count()})
+
+
+@api.route('service/logs', methods=['GET'])
+def service_get_logs():
+    if not request.is_json:
+        return bad_request("No JSON data")
+
+    token = request.args.get("token")
+
+    if token == "" or token is None:
+        return bad_request(
+            "Для доступа к этому методу необходимо предоставить токен. Для получения токена обратитесь к администратору.")
+
+    if Setting.query.filter(Setting.value == token).first() is None:
+        return bad_request("Неверный токен")
+
+
+
+
+    logs_total = Log.query
+
+
+
+    #Бежим по опциональным фильтрам , проверяем их наличие в запросе и применям
+    if "terminal_id" in request.json:
+        terminal_id = request.json["terminal_id"]
+        logs_total = logs_total.filter(Log.terminal_id == terminal_id)
+
+    if "client_id" in request.json:
+        client_id = request.json["client_id"]
+        logs_total = logs_total.filter(Log.client_id == client_id)
+
+    if "date_begin" in request.json:
+        date_begin_str = request.json["date_begin"]
+        date_begin = datetime.datetime.strptime(date_begin_str, '%d-%m-%Y').date()
+        logs_total = logs_total.filter(cast(Log.time_stamp, Date) >= date_begin)
+
+    if "date_end" in request.json:
+        datetime_end_str = request.json["date_end"]
+        date_end = datetime.datetime.strptime(datetime_end_str, '%d-%m-%Y').date()
+        logs_total = logs_total.filter(cast(Log.time_stamp, Date) <= date_end)
+
+
+    #выполняем запрос
+
+    logs = logs_total.all()
+
+    #метаданные
+    total_found = logs_total.count()
+
+
+    return  jsonify({ "total_found": total_found,"rows": [l.to_json() for l in logs] })
+
+
+
+
+
