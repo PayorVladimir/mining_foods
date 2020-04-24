@@ -730,3 +730,39 @@ function saveGroup() {
     });
 
 }
+
+
+    function loadExcel(id) {
+
+        let url = '/stats/terminal/' + id;
+
+
+
+
+         return new Promise(function(resolve, reject) {
+    // Get file name from url.
+    let xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+      resolve(xhr);
+    };
+    xhr.onerror = reject;
+    xhr.open('GET', url);
+    xhr.send();
+  }).then(function(xhr) {
+    var filename = url.substring(url.lastIndexOf("/") + 1).split("?")[0];
+    var a = document.createElement('a');
+    a.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+    a.download = filename; // Set the file name.
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    return xhr;
+  });
+}
+
+
+
+
+
+

@@ -17,6 +17,7 @@ def insert_roles():
     roles = {
             'Moderator': [Permission.VIEW, Permission.CREATE, Permission.MODERATE],
             'Administrator': [Permission.VIEW, Permission.CREATE, Permission.MODERATE, Permission.ADMIN],
+            'Viewer': [Permission.VIEW],
         }
     default_role = 'Moderator'
     for r in roles:
@@ -69,6 +70,8 @@ def login():
 @auth.route('/logout')
 def logout():
     logout_user()
+    return redirect( url_for('main.moderator'))
+
 
 
 @auth.route("/users", methods=['GET','POST'])

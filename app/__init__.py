@@ -15,6 +15,9 @@ from flask import g, request
 from rfc3339 import rfc3339
 
 login_manager = LoginManager()
+from flask_wtf import CsrfProtect
+
+csrf = CsrfProtect()
 
 
 
@@ -43,6 +46,8 @@ def create_app(config_name):
     jsglue = JSGlue(app)
     app.after_request(add_cors_headers)
 
+    csrf.init_app(app)
+
     @app.before_request
     def start_timer():
         g.start = time.time()
@@ -55,7 +60,7 @@ def create_app(config_name):
             return response
 
         now = time.time()
-        duration = round(now - g.start, 2)
+
         dt = datetime.datetime.fromtimestamp(now)
         timestamp = rfc3339(dt, utc=True)
 
@@ -67,7 +72,7 @@ def create_app(config_name):
             ('method', request.method, 'blue'),
             ('path', request.path, 'blue'),
             ('status', response.status_code, 'yellow'),
-            ('duration', duration, 'green'),
+
             ('time', timestamp, 'magenta'),
             ('ip', ip, 'red'),
             ('host', host, 'red'),

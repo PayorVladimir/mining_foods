@@ -37,3 +37,4 @@ run.py
 .env-mysql
 #logs
 .log
+wsgi.py

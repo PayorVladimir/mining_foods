@@ -1,12 +1,13 @@
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import current_app, g
 from app.exceptions import ValidationError
 from . import db, login_manager
 from sqlalchemy import event
+from sqlalchemy import or_, Date, cast
 
 topdir = os.path.join(os.path.dirname(__file__), "")
 sys.path.append(topdir)
@@ -237,8 +238,8 @@ class Terminal(db.Model):
 
 
     def to_json(self):
-        last_24_hours = datetime.now() - timedelta(hours=24)
-        requests_per_day = Log.query.filter(Log.terminal_id == self.id).filter(Log.time_stamp > last_24_hours).count()
+
+        requests_per_day = Log.query.filter(Log.terminal_id == self.id).filter(cast(Log.time_stamp, Date) == date.today()).count()
         json_terminal = {
             "terminal_id": self.id,
             "terminal_description": self.description,

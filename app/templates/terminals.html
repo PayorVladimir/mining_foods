@@ -21,8 +21,9 @@
         </thead>
     </table>
     <div id="toolbar">
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editTerminal()">Редактировать настройки терминала</a>
+
         {%  if current_user.role_id == 2 %}
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editTerminal()">Редактировать настройки терминала</a>
 
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-lock" plain="true" onclick="blockTerminal()">Заблокировать</a>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="activateTerminal()">Активировать</a>

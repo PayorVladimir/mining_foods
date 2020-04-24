@@ -1,0 +1,39 @@
+{% extends '_master.html' %}
+{%  block stats %}
+  <div class="w3-main" style="padding-top: 22px; margin: 22px; height: 100%">
+
+<div class="w3-container ">
+  <h2>Cтатистика по терминалам</h2>
+<div class="w3-bar w3-container">
+
+<input  type="date" id="start" class = "w3-bar-item" name="trip-start"
+       value="{{ today }}"
+       min="2020-04-23" max="{{today}}">
+</div>
+
+<br>
+  <ul class="w3-ul w3-white  w3-card-4" style="overflow-y: scroll; height:300px;">
+
+
+      {%  for terminal in terminals %}
+
+{{terminal.id }}
+    <li class="w3-bar">
+               <span style="width:85px" class="fa fa-tablet {% if terminal.is_active == true %} w3-text-green {% else %} w3-text-red {% endif %} w3-bar-item w3-xxxlarge "></span>
+
+      <span onclick="loadExcel({{ terminal.id }});" class="w3-bar-item w3-button w3-xlarge w3-green w3-right"> <i class = "fas fa-file-excel w3-text-white w3-xlarge"></i> Выгрузка</span>
+
+
+      <div class="w3-bar-item">
+        <span class="w3-large">{{ terminal.description }}</span><br>
+        <span class="{% if terminal.is_active == true %} w3-text-teal {% else %} w3-text-pink {% endif %}">{% if terminal.is_active == true %}активен{% else %} заблокирован{% endif %}</span>
+      </div>
+    </li>
+  {% endfor %}
+
+
+  </ul>
+</div>
+  </div>
+{% endblock %}
+

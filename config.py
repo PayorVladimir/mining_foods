@@ -3,7 +3,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+    SECRET_KEY =  'hard to guess string'
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.googlemail.com')
     MAIL_PORT = int(os.environ.get('MAIL_PORT', '587'))
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in \
@@ -28,17 +28,19 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    LOGIN_VIEW = "http://localhost:5000/auth/login"
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:{11111111}@localhost/foods?charset=utf8mb4"
-    APPLICATION_ROOT = "/mining_foods"
 
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:{11111111}@localhost/foods?charset=utf8mb4"
+
+    WTF_CSRF_TIME_LIMIT = None
+
+    SECRET_KEY = "weu-rydcvo478-fgq3-7ore-co7234-tf3sf38y483465nyfhn4d6tns94d8c-78527n"
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
 
         # email errors to the administrators
-        import logging
-        logging.basicConfig(filename='food.log', level=logging.DEBUG)
+        # import logging
+        # logging.basicConfig(filename='food.log', level=logging.DEBUG)
 
 
 class TestingConfig(Config):
@@ -49,6 +51,7 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI =  "mysql+pymysql://minecite:DBspmi-20@localhost/foods"
     LOGIN_VIEW = "https://digital.spmi.ru/mining_foods/auth/login"
+    WTF_CSRF_TIME_LIMIT = None
 
     REVERSE_PROXY_PATH = '/mining_foods'
 
