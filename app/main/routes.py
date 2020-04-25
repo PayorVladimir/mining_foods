@@ -45,7 +45,7 @@ def terminal_stats_excel(id):
     df.columns = ['№ пропуска', 'Группа пользователей', 'ФИО', 'Терминал', 'Дата и время']
 
     output = BytesIO()
-    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    writer = pd.ExcelWriter(output)
     df.index += 1
     df.to_excel(writer, sheet_name='Выгрузка')
     writer.save()
