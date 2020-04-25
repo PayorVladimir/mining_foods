@@ -51,6 +51,7 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI =  "mysql+pymysql://minecite:DBspmi-20@localhost/foods"
     LOGIN_VIEW = "https://digital.spmi.ru/mining_foods/auth/login"
+    SECRET_KEY = "23dwe5yf-23dwg-dfv-54g-vdvnj6f-f38y4e5fd-dfg-dfg-n6n-s-434f"
 
 
     REVERSE_PROXY_PATH = '/mining_foods'
