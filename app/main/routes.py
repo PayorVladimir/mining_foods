@@ -46,6 +46,7 @@ def terminal_stats_excel(id):
 
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    df.index = np.arange(1, len(df))
     df.to_excel(writer, sheet_name='Выгрузка')
     writer.save()
     writer.save()
