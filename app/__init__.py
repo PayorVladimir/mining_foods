@@ -46,7 +46,7 @@ def create_app(config_name):
     jsglue = JSGlue(app)
     app.after_request(add_cors_headers)
 
-    csrf.init_app(app)
+    #csrf.init_app(app)
 
     @app.before_request
     def start_timer():

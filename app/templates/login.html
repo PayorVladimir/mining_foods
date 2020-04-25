@@ -14,7 +14,7 @@
     </div>
     <form action="{{ url_for('auth.login') }}" method="post" novalidate class="w3-container w3-card-4">
              {{ form.hidden_tag() }}
-            {{ csrf_token() }}
+            
         <p>
             {{ form.username(class_="w3-input" ) }}
             {{ form.username.label }}
