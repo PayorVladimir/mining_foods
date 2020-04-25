@@ -30,7 +30,7 @@
             <span>Логин: {{ current_user.login }}</span><br>
             <span>Зарегистрирован: {{ current_user.registered }}</span><br>
 
-            <span> Уровень доступа: {% if current_user.role_id == 2 %} Администратор {% endif %}  {% if current_user.role_id == 3 %}Наблюдатель {% else %}
+            <span> Уровень доступа: {% if current_user.role_id == 2 %} Администратор {% endif %}  {% if current_user.role_id == 3 %}Наблюдатель {% endif %} {% if current_user.role_id == 1 %}
                 Модератор {% endif %} </span>
 
         </div>

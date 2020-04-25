@@ -28,6 +28,9 @@ def terminal_stats_excel(id):
         date_str = request.args.get("date")
         date = datetime.datetime.strptime(date_str, '%d-%m-%Y').date()
         logs_total = logs_total.filter(cast(Log.time_stamp, Date) == date)
+    else:
+        logs_total = logs_total.filter(cast(Log.time_stamp, Date) == date.today())
+
 
     #выполняем запрос
 
@@ -59,7 +62,8 @@ def statistics():
 
     for terminal in terminals:
         if terminal.logs.count() >0:
-            res.append(terminal)
+            if Log.query.filter(cast(Log.time_stamp, Date) == date.today()).filter(Log.terminal_id == terminal.id):
+                res.append(terminal)
 
 
     return render_template('stats.html', terminals= res, today = datetime.datetime.now().date().strftime('%Y-%m-%d'))
