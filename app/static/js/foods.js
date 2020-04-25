@@ -733,7 +733,7 @@ function saveGroup() {
 
 function loadExcel(id) {
 
-        let url = '/stats/terminal/' + id;
+        let url = '/mining_foods/stats/terminal/' + id;
 
          return new Promise(function(resolve, reject) {
     // Get file name from url.
