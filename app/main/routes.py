@@ -62,7 +62,7 @@ def statistics():
 
     for terminal in terminals:
         if terminal.logs.count() >0:
-            if Log.query.filter(cast(Log.time_stamp, Date) == date.today()).filter(Log.terminal_id == terminal.id):
+            if Log.query.filter(cast(Log.time_stamp, Date) == date.today()).filter(Log.terminal_id == terminal.id).count() >0:
                 res.append(terminal)
 
 
