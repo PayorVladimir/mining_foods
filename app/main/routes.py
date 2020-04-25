@@ -51,7 +51,7 @@ def terminal_stats_excel(id):
     writer.save()
     writer.save()
     output.seek(0)
-    return send_file(output, attachment_filename='Выгрузка_{terminal}_{date}.xlsx'.format(terminal = terminal.description, date = datetime.datetime.now().strftime("%d_%m_%y") ), as_attachment=True)
+    return send_file(output, attachment_filename='Выгрузка_{terminal}_{date}.xls'.format(terminal = terminal.description, date = datetime.datetime.now().strftime("%d_%m_%y") ), as_attachment=True)
 
 @main.route("/stats", methods=["GET","POST"])
 @login_required
