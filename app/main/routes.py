@@ -22,14 +22,14 @@ def terminal_stats_excel(id):
 
     terminal = Terminal.query.get_or_404(id)
 
-    logs_total = Log.query.filter(Log.terminal_id == id)
+    logs_total = Log.query.filter(Log.terminal_id == id).filter(cast(Log.time_stamp, Date) == date.today())
 
     if  "date" in request.args:
         date_str = request.args.get("date")
         date = datetime.datetime.strptime(date_str, '%d-%m-%Y').date()
         logs_total = logs_total.filter(cast(Log.time_stamp, Date) == date)
-    else:
-        logs_total = logs_total.filter(cast(Log.time_stamp, Date) == date.today())
+
+
 
 
     #выполняем запрос
