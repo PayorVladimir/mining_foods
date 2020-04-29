@@ -125,7 +125,7 @@ def register_terminal():
     db.session.add(new_terminal)
     db.session.commit()
 
-    terminal = Terminal.query.filter(Terminal.uid == terminal_id).first()
+    terminal = Terminal.query.filter(Terminal.uid == terminal_uid).first()
 
     return jsonify({'token' : token, 'id': terminal.id })
 
