@@ -289,6 +289,7 @@ def service_get_logs():
         terminal_id = request.json["terminal_id"]
         logs_total = logs_total.filter(Log.terminal_id == terminal_id)
 
+
     if "client_id" in request.json:
         client_id = request.json["client_id"]
         logs_total = logs_total.filter(Log.client_id == client_id)

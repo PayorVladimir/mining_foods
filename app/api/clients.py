@@ -68,7 +68,7 @@ def get_quote():
     #check if 5 minutes passed from last log in this terminal, if not - approve
     now = datetime.datetime.now()
     if logs is not None and len(logs)>0:
-        if now - datetime.timedelta(minutes=5) <= logs[0].time_stamp <= now and logs[0].terminal.uid == terminal_uid:
+        if now - datetime.timedelta(seconds=30) <= logs[0].time_stamp <= now and logs[0].terminal.uid == terminal_uid:
             return jsonify({
             "approved": True,
             "first_time": False,
