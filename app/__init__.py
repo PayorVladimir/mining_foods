@@ -33,6 +33,10 @@ def add_cors_headers(response):
         headers = request.headers.get('Access-Control-Request-Headers')
         if headers:
             response.headers['Access-Control-Allow-Headers'] = headers
+        origin = request.headers.get('Origin', '')
+        if origin.endswith('digital.spmi.ru'):
+                response.headers['Access-Control-Allow-Origin'] = origin
+                response.headers['Access-Control-Allow-Credentials'] = 'true'
     return response
 
 
