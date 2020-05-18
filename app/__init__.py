@@ -49,7 +49,7 @@ def create_app(config_name):
     config[config_name].init_app(app)
     # implement CORs support
     jsglue = JSGlue(app)
-    app.after_request(add_cors_headers)
+
 
     #csrf.init_app(app)
 
