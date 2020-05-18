@@ -813,7 +813,7 @@ function copyToClipbooard(id){
 var tokens = []
 var selected_token;
 function updateTokensList() {
-    $.get("/mining_foods/api/v1/settings", function (data, status) {
+    $.get("https://digital.spmi.ru/mining_foods/api/v1/settings", function (data, status) {
         tokens = [];
          tokens = data.settings;
             $("#tokensList").empty()
@@ -838,7 +838,7 @@ function deleteToken() {
 
     $.ajax({
   type: "DELETE",
-  url: "/mining_foods/api/v1/settings/"+selected_token,
+  url: "https://digital.spmi.ru/mining_foods/api/v1/settings/"+selected_token,
          success: function() { updateTokensList();
   document.getElementById('deleteTokenModal').style.display='none';}
 });
@@ -850,7 +850,7 @@ function addToken() {
     var label_v = $('#tokenName').val();
     $.ajax({
   type: "POST",
-  url: "/mining_foods/api/v1/settings",
+  url: "https://digital.spmi.ru/mining_foods/api/v1/settings",
   data: JSON.stringify({label: label_v}),
   contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -866,7 +866,7 @@ function updatePin() {
     var pin_v = $('#pinInput').val();
     $.ajax({
   type: "PATCH",
-  url: "/mining_foods/api/v1/settings/update_pin",
+  url: "https://digital.spmi.ru/mining_foods/api/v1/settings/update_pin",
   data: JSON.stringify({pin: pin_v}),
   contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -883,7 +883,7 @@ $( "#datepicker" ).datepicker("setDate", today);
 
 var stats = document.getElementById('barStatsChart').getContext('2d');
 
- $.get("/mining_foods/api/v1/stats", function (data) {
+ $.get("https://digital.spmi.ru/mining_foods/api/v1/stats", function (data) {
         var myChart = new Chart(stats, {
     type: 'bar',
     data: {
