@@ -43,7 +43,7 @@ def add_cors_headers(response):
 def create_app(config_name):
     app = Flask(__name__)
 
-    cors = CORS(app, resources={r"/*": {"origins": "*"}}, headers='Content-Type')
+    CORS(app, resources={r"/*": {"origins": "*"}}, headers='Content-Type', supports_credentials=True)
 
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
