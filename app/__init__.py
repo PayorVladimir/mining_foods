@@ -9,6 +9,7 @@ from flask_jsglue import JSGlue
 from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
 import datetime
 import time
+from flask_cors import CORS
 
 import colors
 from flask import g, request
@@ -38,7 +39,7 @@ def add_cors_headers(response):
 def create_app(config_name):
     app = Flask(__name__)
 
-
+    CORS(app)
 
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
