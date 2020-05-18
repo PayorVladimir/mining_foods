@@ -1,4 +1,4 @@
-from flask import jsonify, request, g, Response
+from flask import jsonify, request, g, Response, make_response
 from .. import db
 from . import api
 from ..models import Setting, Permission
@@ -13,7 +13,8 @@ import secrets
 @login_required
 @permission_required(Permission.ADMIN)
 def get_settings():
-
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_prelight_response()
     settings = Setting.query.filter(Setting.label!="pin")
 
     return jsonify({"settings":[setting.to_json() for setting in settings]})
@@ -93,6 +94,8 @@ def delete_setting(value):
 @login_required
 @permission_required(Permission.ADMIN)
 def create_settings():
+
+
     if not request.is_json:
         return bad_request("No JSON data")
 
@@ -108,3 +111,15 @@ def create_settings():
     db.session.commit()
 
     return jsonify({ "message":"Параметр {} добавлен в базу данных.".format(setting.label)})
+
+
+def _build_cors_prelight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
+def _corsify_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
