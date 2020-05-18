@@ -265,8 +265,6 @@ def get_terminal_stats():
 
 @api.route('service/logs', methods=['GET'])
 def service_get_logs():
-    if not request.is_json:
-        return bad_request("No JSON data")
 
     token = request.args.get("token")
 
@@ -285,22 +283,22 @@ def service_get_logs():
 
 
     #Бежим по опциональным фильтрам , проверяем их наличие в запросе и применям
-    if "terminal_id" in request.json:
-        terminal_id = request.json["terminal_id"]
+    if "terminal_id" in request.args:
+        terminal_id = request.args.get("terminal_id")
         logs_total = logs_total.filter(Log.terminal_id == terminal_id)
 
 
-    if "client_id" in request.json:
-        client_id = request.json["client_id"]
+    if "client_id" in request.args:
+        client_id = request.args.get("client_id")
         logs_total = logs_total.filter(Log.client_id == client_id)
 
-    if "date_begin" in request.json:
-        date_begin_str = request.json["date_begin"]
+    if "date_begin" in request.args:
+        date_begin_str = request.args.get("date_begin")
         date_begin = datetime.datetime.strptime(date_begin_str, '%d-%m-%Y').date()
         logs_total = logs_total.filter(cast(Log.time_stamp, Date) >= date_begin)
 
-    if "date_end" in request.json:
-        datetime_end_str = request.json["date_end"]
+    if "date_end" in request.args:
+        datetime_end_str = request.args.get("date_end")
         date_end = datetime.datetime.strptime(datetime_end_str, '%d-%m-%Y').date()
         logs_total = logs_total.filter(cast(Log.time_stamp, Date) <= date_end)
 

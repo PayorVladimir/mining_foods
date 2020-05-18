@@ -32,28 +32,60 @@ def get_quote():
     #Get client data by card id
     client_card_id = request.args.get("client_card_id")
 
+    # Get client data by card id
+    card_data = request.args.get("card_data")
 
-    if client_card_id is None or client_card_id == "":
+    if client_card_id is None or client_card_id == "" :
         return bad_request("Код карты клиента не предоставлен")
 
+    if card_data is None or card_data == "":
+        card_data = "нет данных"
+
+
+    #активировать после обновления фрониы
+    # if client_card_id is None or client_card_id == "" or card_data is None or card_data == "":
+    #     return bad_request("Код карты клиента не предоставлен")
+    #
 
     #учитываем сдвиг карт для студентов
     #TODO: научиться отличать карты старого образца
-    client_card_id = int(client_card_id) + 65536
+    client_card_id = int(client_card_id) + 0
 
 
     client = Client.query.filter(Client.card_id == client_card_id).first()
     # check if user registered
     if client is None:
+        new_log = Log(terminal_id=terminal.id,
+                      client_card=client_card_id,
+                      info = card_data,
+                      status="Отказ: пользователь не зарегистрирован")
+        db.session.add(new_log)
+        db.session.commit()
+
         return bad_request("Пользователь не зарегистрирован.")
     #check if user is blocked
     if not client.is_active:
+        new_log = Log(terminal_id=terminal.id, client_id=client.id,
+                      client_group_name=client.group.title if client.group is not None else "без группы", \
+                      client_card=client.card_id, terminal_name=terminal.description, client_name=client.name,
+                      info=card_data,
+                      status="Отказ: пользователь заблокирован")
+        db.session.add(new_log)
+        db.session.commit()
+
         return bad_request("Пользователь заблокирован.")
 
 
     #check group limitations
     if client.group is not None:
         if not client.group.is_active:
+            new_log = Log(terminal_id=terminal.id, client_id=client.id,
+                          client_group_name=client.group.title if client.group is not None else "без группы", \
+                          client_card=client.card_id, terminal_name=terminal.description, client_name=client.name,
+                          info=card_data,
+                          status="Отказ: группа заблокирована")
+            db.session.add(new_log)
+            db.session.commit()
             return bad_request("Группа в которой состоит пользователь заблокирована.")
 
     #get all logs in last 24 hours ??
@@ -96,7 +128,7 @@ def get_quote():
             })
 
     new_log = Log(terminal_id=terminal.id, client_id=client.id, client_group_name= client.group.title if client.group is not None else "без группы",\
-                  client_card=client.card_id, terminal_name=terminal.description, client_name=client.name)
+                  client_card=client.card_id, terminal_name=terminal.description, client_name=client.name, status="Успешно",   info = card_data,)
 
     terminal.total_requests += 1
 

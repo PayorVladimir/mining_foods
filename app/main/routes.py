@@ -7,10 +7,11 @@ from io import BytesIO
 import datetime
 from datetime import date
 from sqlalchemy import or_, Date, cast
-
+from .decorators import permission_required
 #moderator web-page
 @main.route("/", methods=["GET","POST"])
 @login_required
+
 def moderator():
 
     return render_template('index.html')
@@ -63,7 +64,7 @@ def statistics():
 
     for terminal in terminals:
         if terminal.logs.count() >0:
-            if Log.query.filter(cast(Log.time_stamp, Date) == date.today()).filter(Log.terminal_id == terminal.id).count() >0:
+            if Log.query.filter(cast(Log.time_stamp, Date) == date.today()).filter(Log.terminal_id == terminal.id).count() > 0:
                 res.append(terminal)
 
 
@@ -75,6 +76,23 @@ def statistics():
 def terminals():
 
     return render_template('terminals.html')
+
+@main.route("/logs", methods=["GET","POST"])
+@login_required
+def logs():
+
+    return render_template('logs.html')
+
+
+
+@main.route("/access", methods=["GET","POST"])
+@login_required
+@permission_required(Permission.MODERATE)
+def access():
+    pin = Setting.query.filter(Setting.label=="pin").first()
+
+    return render_template('tokens.html',pin = pin.value )
+
 
 @main.route("/groups", methods=["GET","POST"])
 @login_required

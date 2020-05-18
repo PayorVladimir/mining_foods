@@ -17,7 +17,7 @@ from rfc3339 import rfc3339
 login_manager = LoginManager()
 from flask_wtf import CsrfProtect
 
-csrf = CsrfProtect()
+# csrf = CsrfProtect()
 
 
 

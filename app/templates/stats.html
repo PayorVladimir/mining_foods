@@ -3,13 +3,22 @@
   <div class="w3-main" style="padding-top: 22px; margin: 22px; height: 100%">
 
 <div class="w3-container ">
-  <h2>Cтатистика по терминалам на сегодня</h2>
-<div class="w3-bar w3-container">
+  <h2>Cтатистика использования системы</h2>
+<div class="w3-cell-row w3-container w3-card-4 w3-white"   style="padding-bottom: 20px;">
+<div class="w3-cell  w3-white w3-container">
 
-{#<input  type="date" id="start" class = "w3-bar-item" name="trip-start"#}
-{#       value="{{ today }}"#}
-{#       min="2020-04-23" max="{{today}}">#}
+<canvas id="barStatsChart"></canvas>
 </div>
+
+</div>
+<br>
+<h2>Выгрузка по терминалам за сегодня </h2>
+{#<div class="w3-bar w3-container">#}
+{##}
+{#<p>Дата: <input type="text" id="datepicker"></p>#}
+{#    <button class = "w3-bar-item w3-button w3-teal">Сегодня</button>#}
+{##}
+{#</div>#}
 
 <br>
   <ul class="w3-ul w3-white  w3-card-4" style="overflow-y: scroll; height:300px;">

@@ -253,6 +253,7 @@ class Terminal(db.Model):
 
         return json_terminal
 
+
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     time_stamp = db.Column(db.DateTime(), default=datetime.now)
@@ -261,6 +262,8 @@ class Log(db.Model):
     terminal_name =  db.Column(db.String(128))
     client_name =  db.Column(db.String(128))
     client_card =  db.Column(db.Integer)
+    status = db.Column(db.String(128))
+    info = db.Column(db.String(128))
     client_group_name = db.Column(db.String(128))
 
 
@@ -268,11 +271,13 @@ class Log(db.Model):
         json_log = {
             "log_id": self.id,
             "time_stamp": self.time_stamp.strftime("%m/%d/%Y, %H:%M:%S"),
-            "terminal_name": self.terminal_name,
-            "client_name": self.client_name,
-            "client_card": self.client_card,
-            "client_group_name": self.client_group_name,
-            "client_id": self.client_id if self.client_id is not None else "удален",
+            "terminal_name": self.terminal_name if self.terminal_name is not None else "нет данных",
+            "client_name": self.client_name if self.client_name is not None else "нет данных",
+            "client_card": self.client_card if self.client_card is not None else "нет данных",
+            "client_group_name": self.client_group_name if self.client_group_name is not None else "нет данных",
+            "info": self.info if self.info is not None else "нет данных",
+            "status": self.status if self.status is not None else "нет данных",
+            "client_id": self.client_id if self.client_id is not None else "удален/нет данных",
 
         }
         return json_log

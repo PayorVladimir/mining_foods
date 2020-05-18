@@ -1,0 +1,109 @@
+{% extends '_master.html' %}
+{%  block tokens %}
+  <div class="w3-main" style="padding-top: 22px; margin: 22px; height: 100%">
+  <h2>Управление доступом к системе</h2>
+<div class="w3-cell-row">
+
+<div class=" w3-container w3-cell"  >
+  <h3>Токены API</h3>
+  <ul class="w3-ul w3-white  w3-card-4" style="overflow-y: scroll; height:300px; " id="tokensList" >
+  </ul>
+  <br>
+  <button onclick="document.getElementById('addTokenModal').style.display='block'" class="w3-bar-item w3-button w3-large w3-green w3-left">  Добавить токен</button>
+</div>
+
+<div class="w3-cell w3-сontainer ">
+  <h3>PIN-код терминалов</h3>
+    <div class="w3-card-4 w3-white" style="padding: 10px;">
+       <h5 class="w3-text">Текущее значение:</h5>
+       <h1> {{pin}}</h1>
+
+     <br>
+     <button onclick="document.getElementById('editPin').style.display='block'"class="w3-bar-item w3-button w3-large w3-green">  Cменить ПИН-код</button>
+
+    </div>
+  </div>
+
+
+
+
+</div>
+
+
+
+
+</div>
+
+  <div id="addTokenModal" class="w3-modal">
+    <div class="w3-modal-content w3-card-4">
+      <header class="w3-container w3-green">
+        <span onclick="document.getElementById('addTokenModal').style.display='none'"
+        class="w3-button w3-display-topright">&times;</span>
+        <h2>Добавить токен API</h2>
+      </header>
+      <div class="w3-container">
+
+        <h6>Имя токена:</h6>
+        <input id ="tokenName" class="w3-input"></input>
+        <br>
+        <div class="w3-bar w3-container">
+         <button onclick="addToken()" class="w3-bar-item w3-button w3-large w3-green">  Добавить</button>
+         <button onclick="document.getElementById('addTokenModal').style.display='none'" class="w3-bar-item w3-button w3-large w3-red " style="margin-left:10px;">  Отмена</button>
+         </div>
+         <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <div id="deleteTokenModal" class="w3-modal">
+    <div class="w3-modal-content w3-card-4">
+      <header class="w3-container w3-red">
+        <span onclick="document.getElementById('deleteTokenModal').style.display='none'"
+        class="w3-button w3-display-topright">&times;</span>
+        <h2>Удалить токен API</h2>
+      </header>
+      <div class="w3-container">
+
+       <p class="w3-text" id="deleteTokenMsg"></p>
+
+        <br>
+        <div class="w3-bar w3-container">
+         <button id="deleteTokenBtn" onclick="deleteToken()" class="w3-bar-item w3-button w3-large w3-red">  Удалить</button>
+         <button onclick="document.getElementById('deleteTokenModal').style.display='none'" class="w3-bar-item w3-button w3-large w3-green" style="margin-left:10px;">  Отмена</button>
+         </div>
+         <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div id="editPin" class="w3-modal">
+    <div class="w3-modal-content w3-card-4">
+      <header class="w3-container w3-green">
+        <span onclick="document.getElementById('editPin').style.display='none'"
+        class="w3-button w3-display-topright">&times;</span>
+        <h2>Изменить PIN-код терминалов</h2>
+      </header>
+      <div class="w3-container">
+
+        <h6>PIN-код:</h6>
+        <input maxlength="4" id="pinInput" value="{{ pin }}" type="text" class="w3-input" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" />
+        <br>
+        <div class="w3-bar w3-container">
+         <button onclick="updatePin()" class="w3-bar-item w3-button w3-large w3-green">  Изменить</button>
+         <button onclick="document.getElementById('editPin').style.display='none'" class="w3-bar-item w3-button w3-large w3-red " style="margin-left:10px;">  Отмена</button>
+         </div>
+         <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+{% endblock %}

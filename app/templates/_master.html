@@ -8,6 +8,8 @@
     <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/icon.css">
     <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/color.css">
     <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/demo/demo.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
     {{ JSGlue.include() }}
 </head>
 <body class="w3-light-grey">
@@ -23,7 +25,6 @@
     <div class="w3-container" style="margin-left: 0;">
 
         <h5>Пользователь</h5>
-
 
         <div class="w3-col s6 w3-bar">
             <span>Имя: {{ current_user.username }}</span><br>
@@ -49,9 +50,18 @@
         <a href="{{ url_for('main.groups') }}" class="w3-bar-item w3-large w3-button w3-padding"
                style="text-decoration: none"><i class="fas fa-tags fa-fw"></i>  Группы</a>
 
+          <a href="{{ url_for('main.logs') }}" class="w3-bar-item  w3-large w3-button w3-padding"
+           style="text-decoration: none"><i class="fas fa-terminal"></i>  Системные логи</a>
+
         {% if current_user.role_id == 2 %}
             <a href="{{ url_for('main.terminals') }}" class="w3-bar-item  w3-large w3-button w3-padding"
            style="text-decoration: none"><i class="fas fa-tablet"></i>  Терминалы</a>
+
+              <a href="{{ url_for('main.access') }}" class="w3-bar-item  w3-large w3-button w3-padding"
+           style="text-decoration: none"><i class="fas fa-key"></i>  Доступ</a>
+
+
+
             <a href="{{ url_for('auth.users') }}" class="w3-bar-item w3-large w3-button w3-padding"
                style="text-decoration: none"><i class="fas fa-users-cog fa-fw"></i>  Пользователи</a>
 
@@ -92,6 +102,8 @@
         {% block terminals %} {% endblock %}
         {% block users %} {% endblock %}
         {%  block groups %}{% endblock %}
+        {%  block logs %}{% endblock %}
+        {%  block tokens %}{% endblock %}
 
     </div>
 </div>
@@ -127,8 +139,10 @@
     }
 </script>
 
-
+<script type="text/javascript" src="{{ url_for('static', filename="js/Chart.bundle.min.js") }}"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="https://www.jeasyui.com/easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="https://www.jeasyui.com/easyui/datagrid-detailview.js"></script>
 <script src="https://kit.fontawesome.com/a076d05399.js"></script>

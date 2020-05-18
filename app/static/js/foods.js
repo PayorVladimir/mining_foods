@@ -61,6 +61,10 @@ function clientSearch(){
     });
 }
 
+
+
+
+
 function newUser() {
     $('#dlg').dialog('open').dialog('center').dialog('setTitle', 'Новый клиент');
     $('#fm').form('clear');
@@ -759,6 +763,174 @@ function loadExcel(id) {
 
 
 
+var getDates = function(startDate, endDate) {
 
+  var dates = [],
+      currentDate = startDate,
+      addDays = function(days) {
+        var date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+      };
+  while (currentDate <= endDate) {
+    dates.push(currentDate.getDate());
+    currentDate = addDays.call(currentDate, 1);
+  }
+  return dates;
+};
+
+var lastWeek = new Date();
+var today = new Date()
+lastWeek.setDate(lastWeek.getDate() - 6);
+var dates = getDates(lastWeek,today);
+
+
+
+function logsSearch(){
+    $('#dg-logs').datagrid('load', {
+        query: $('#logs_search').val()
+    });
+}
+
+
+
+
+
+$( "#tokensList" ).ready(function() {
+    updateTokensList();
+});
+
+
+function copyToClipbooard(id){
+
+  var copyText = document.getElementById(id);
+  copyText.select();
+  copyText.setSelectionRange(0, 99999)
+  document.execCommand("copy");
+
+}
+
+var tokens = []
+var selected_token;
+function updateTokensList() {
+    $.get("/mining_foods/api/v1/settings", function (data, status) {
+        tokens = [];
+         tokens = data.settings;
+            $("#tokensList").empty()
+
+       for (let i = 0; i < tokens.length; i++) {
+             let token_label = tokens[i]["label"];
+            $("#tokensList").append('<li> <b class="w3-text-black " style="width:35px;font-size: 12pt">' + tokens[i]["label"]+'</b>  <textarea readonly cols="64" rows="1" style="resize:none" id="token-'+i+'">'+ tokens[i]["value"]+'</textarea> <span onclick=copyToClipbooard("token-'+i+'") <i class = "fas fa-copy w3-text-teal w3-large"></i></span>     <span onclick=tokenToDelete("'+i+'") <i class = "fas fa-trash w3-text-red w3-large"></i></span>   </li> ');
+        }
+    });
+}
+
+
+
+function tokenToDelete(value) {
+document.getElementById('deleteTokenModal').style.display='block';
+selected_token = tokens[value]["value"];
+document.getElementById("deleteTokenMsg").innerHTML = "Вы действительно хотите удалить токен "+tokens[value]["label"] +"? Его удаление может привести к отключению клиентских приложений.";
+
+}
+
+function deleteToken() {
+
+    $.ajax({
+  type: "DELETE",
+  url: "/mining_foods/api/v1/settings/"+selected_token,
+         success: function() { updateTokensList();
+  document.getElementById('deleteTokenModal').style.display='none';}
+});
+
+updateTokensList();
+}
+
+function addToken() {
+    var label_v = $('#tokenName').val();
+    $.ajax({
+  type: "POST",
+  url: "/mining_foods/api/v1/settings",
+  data: JSON.stringify({label: label_v}),
+  contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function() { updateTokensList(); }
+});
+document.getElementById('addTokenModal').style.display='none';
+updateTokensList();
+}
+
+
+
+function updatePin() {
+    var pin_v = $('#pinInput').val();
+    $.ajax({
+  type: "PATCH",
+  url: "/mining_foods/api/v1/settings/update_pin",
+  data: JSON.stringify({pin: pin_v}),
+  contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function() { document.getElementById('editPin').style.display='none'; }
+});
+
+document.getElementById('editPin').style.display='none';
+updateTokensList();
+}
+
+
+$( "#datepicker" ).datepicker();
+$( "#datepicker" ).datepicker("setDate", today);
+
+var stats = document.getElementById('barStatsChart').getContext('2d');
+
+ $.get("/mining_foods/api/v1/stats", function (data) {
+        var myChart = new Chart(stats, {
+    type: 'bar',
+    data: {
+
+        labels: dates,
+        datasets: [{
+
+            data: data["rows"],
+
+
+            backgroundColor: function(context) {
+                        var index = context.dataIndex;
+                            var value = context.dataset.data[index];
+                                return value > 1000 ? 'red' :  // draw negative values in red
+                              value > 500 ? 'orange' :    // else, alternate values in blue and green
+                                         'green';
+},
+            borderColor: function(context) {
+                        var index = context.dataIndex;
+                            var value = context.dataset.data[index];
+                                return value > 1000 ? 'red' :  // draw negative values in red
+                              value > 500 ? 'orange' :    // else, alternate values in blue and green
+                                         'green';
+},
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        },
+        title: {
+            display: true,
+            text: 'Количество обращений к системе за день'
+        },
+         legend: {
+             display: false,
+         }
+    }
+});
+
+
+
+    });
 
 
