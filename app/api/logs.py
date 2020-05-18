@@ -46,7 +46,7 @@ def get_logs():
    rows= [log.to_json() for log in logs]
 
 
-   return jsonify({ "total": len(Log.query.all()) ,"rows": list(reversed(rows)) })
+   return jsonify({ "total": len(Log.query.all()) ,"rows": rows })
 
 
 @api.route('stats/', methods=[ 'GET'])
